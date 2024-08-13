@@ -1,0 +1,27 @@
+import os
+
+def check_missing_files(directory, file_list):
+    """
+    Check for missing files in a specified directory.
+
+    Args:
+    directory (str): The path to the directory to check.
+    file_list (list): A list of file names to check for in the directory.
+
+    Returns:
+    list: A list of missing files.
+    """
+    # Get the list of files currently in the directory
+    existing_files = os.listdir(directory)
+   
+    # Check for missing files
+    missing_files = [file for file in file_list if file not in existing_files]
+   
+    return missing_files
+
+# Example usage:
+directory_path = '/path/to/your/directory'
+files_to_check = ['file1.txt', 'file2.txt', 'file3.txt']  # Replace with your file names
+
+missing_files = check_missing_files(directory_path, files_to_check)
+print(f"Missing files: {missing_files}")
