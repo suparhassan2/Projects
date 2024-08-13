@@ -1,0 +1,19 @@
+import os
+
+# Set the directory where your files are located
+directory = '/path/to/your/files'
+
+# Loop through all files in the directory
+for filename in os.listdir(directory):
+    # Check if the file ends with "_test.xlsx"
+    if filename.endswith("_test.xlsx"):
+        # Construct the new filename by removing "_test"
+        new_filename = filename.replace("_test.xlsx", ".xlsx")
+        # Construct full file paths
+        old_file = os.path.join(directory, filename)
+        new_file = os.path.join(directory, new_filename)
+        # Rename the file
+        os.rename(old_file, new_file)
+        print(f'Renamed: {filename} to {new_filename}')
+
+print("Renaming complete.")
