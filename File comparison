@@ -1,0 +1,60 @@
+import win32com.client
+import os
+import pandas as pd
+
+# Function to get the latest unread email attachment from a specific subfolder in Outlook
+def get_latest_attachment(subfolder_name, save_path):
+    outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
+    inbox = outlook.GetDefaultFolder(6)  # 6 refers to the inbox
+    subfolder = None
+
+    # Search for the specified subfolder
+    for folder in inbox.Folders:
+        if folder.Name == subfolder_name:
+            subfolder = folder
+            break
+
+    if subfolder is None:
+        raise Exception(f"Subfolder '{subfolder_name}' not found")
+
+    messages = subfolder.Items
+    messages.Sort("[ReceivedTime]", True)  # Sort by received time, newest first
+
+    for message in messages:
+        if message.Unread and message.Attachments.Count > 0:
+            attachment = message.Attachments.Item(1)
+            attachment.SaveAsFile(os.path.join(save_path, attachment.FileName))
+            message.Unread = False  # Mark as read
+            return os.path.join(save_path, attachment.FileName)
+
+    raise Exception("No unread emails with attachments found")
+
+# Paths and subfolder name
+subfolder_name = "sophisreport"
+save_path = "path/to/save/attachment"  # Ensure this path exists
+
+# Get the latest attachment from the specified subfolder
+try:
+    file_b = get_latest_attachment(subfolder_name, save_path)
+    print(f"Latest attachment saved as: {file_b}")
+
+    # Define path for File A
+    file_a = 'path/to/file_a.csv'
+
+    # Load the files into dataframes
+    df_a = pd.read_csv(file_a)
+    df_b = pd.read_csv(file_b)
+
+    # Ensure 'Trade ID' is the column name in both files
+    trade_id_column = 'Trade ID'
+
+    # Find Trade IDs in File B that are not in File A
+    missing_in_a = df_b[~df_b[trade_id_column].isin(df_a[trade_id_column])]
+
+    # Save the result to a new file
+    missing_in_a.to_csv('missing_in_a.csv', index=False)
+
+    print("Comparison complete. Results saved to 'missing_in_a.csv'.")
+
+except Exception as e:
+    print(f"An error occurred: {e}")
