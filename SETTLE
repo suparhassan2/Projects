@@ -1,0 +1,33 @@
+import win32com.client as win32
+import os
+from datetime import datetime
+
+def update_links_and_save_copy(file_path):
+    # Open Excel application
+    excel = win32.Dispatch('Excel.Application')
+    
+    # Open the workbook
+    wb = excel.Workbooks.Open(file_path)
+    
+    # Update links
+    wb.UpdateLink(Name=wb.LinkSources(), Type=1)
+    
+    # Save the workbook after updating links
+    wb.Save()
+    
+    # Generate a new file name for the copy
+    base, ext = os.path.splitext(file_path)
+    new_file_name = f"{base}_updated_{datetime.now().strftime('%Y%m%d%H%M%S')}{ext}"
+    
+    # Save a copy of the workbook with the new name
+    wb.SaveAs(new_file_name)
+    
+    # Close the workbook and quit Excel
+    wb.Close()
+    excel.Quit()
+    
+    print(f"Workbook saved and a new copy has been created as {new_file_name}")
+
+# Example usage:
+file_path = RF'.xlsx'
+update_links_and_save_copy(file_path)
