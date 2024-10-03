@@ -1,0 +1,37 @@
+import os
+
+def check_missing_files_in_folders(parent_folder, file_list):
+    # Iterate through all subfolders in the parent folder
+    missing_files_report = {}
+    
+    for folder_name in os.listdir(parent_folder):
+        folder_path = os.path.join(parent_folder, folder_name)
+        
+        # Ensure it's a folder before proceeding
+        if os.path.isdir(folder_path):
+            # Create the expected filenames by appending the folder name to each file
+            expected_files = [f"{file} {folder_name}.xlsx" for file in file_list]
+            
+            # Get a list of all files in the subfolder
+            files_in_folder = os.listdir(folder_path)
+            
+            # Find missing files by comparing the expected filenames with the files in the folder
+            missing_files = [file for file in expected_files if file not in files_in_folder]
+            
+            # If there are missing files, add them to the report for this folder
+            if missing_files:
+                missing_files_report[folder_name] = missing_files
+    
+    return missing_files_report
+
+# Example usage
+parent_folder = '/path/to/your/parent/folder'  # Replace with the actual parent folder path
+file_list = ['File1', 'File2', 'File3']  # Base names of the expected files
+
+missing_files_report = check_missing_files_in_folders(parent_folder, file_list)
+
+if missing_files_report:
+    for folder, missing_files in missing_files_report.items():
+        print(f"Missing files in folder {folder}: {missing_files}")
+else:
+    print("All files are present in all folders.")
