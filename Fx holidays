@@ -1,0 +1,112 @@
+import holidays
+import pandas as pd
+from datetime import datetime, timedelta
+
+# List of currencies
+
+currencies = [‘CAD’, ‘GBP’, ‘USD’, ‘EUR’, ‘CHF’, ‘DKK’, ‘NOK’, ‘JPY’, ‘SGD’, ‘AUD’, ‘NZD’]
+
+# Country mappings for currencies (focusing on financial centers)
+
+country_mapping = {
+‘CAD’: ‘CA’,
+‘GBP’: ‘GB’,
+‘USD’: ‘US’,
+‘EUR’: ‘DE’,  # Using Germany/Frankfurt as EUR financial center
+‘CHF’: ‘CH’,
+‘DKK’: ‘DK’,
+‘NOK’: ‘NO’,
+‘JPY’: ‘JP’,
+‘SGD’: ‘SG’,
+‘AUD’: ‘AU’,
+‘NZD’: ‘NZ’
+}
+
+def get_holidays_for_currency(currency, year=2026):
+“””
+Get holidays for a specific currency using the holidays library
+“””
+country_code = country_mapping[currency]
+
+```
+try:
+    # Get holidays for the country
+    country_holidays = holidays.country_holidays(country_code, years=year)
+    return dict(country_holidays)
+except Exception as e:
+    print(f"Error getting holidays for {currency} ({country_code}): {e}")
+    return {}
+```
+
+def main():
+year = 2026
+all_holidays = {}
+all_dates = set()
+
+```
+print(f"Generating FX Trading Holidays for {year} using holidays library\n")
+print("=" * 80)
+
+# Fetch holidays for each currency
+for currency in currencies:
+    print(f"Processing holidays for {currency}...")
+    
+    currency_holidays = get_holidays_for_currency(currency, year)
+    all_holidays[currency] = currency_holidays
+    
+    # Add all dates to the set
+    all_dates.update(currency_holidays.keys())
+    
+    print(f"  Found {len(currency_holidays)} holidays")
+
+# Sort all dates
+sorted_dates = sorted(list(all_dates))
+
+# Create DataFrame with date strings
+data = {
+    'Date': [date.strftime('%Y-%m-%d') for date in sorted_dates]
+}
+
+# Add columns for each currency
+for currency in currencies:
+    data[currency] = [
+        all_holidays[currency].get(date, '') 
+        for date in sorted_dates
+    ]
+
+df = pd.DataFrame(data)
+
+# Save to CSV
+output_file = 'fx_trading_holidays_2026.csv'
+df.to_csv(output_file, index=False)
+
+print("\n" + "=" * 80)
+print(f"\nFX Trading Holidays saved to {output_file}")
+
+# Display summary
+print("\nSummary:")
+print("-" * 80)
+for currency in currencies:
+    count = len([v for v in all_holidays[currency].values() if v])
+    print(f"{currency}: {count} holidays")
+
+print(f"\nTotal unique dates with holidays: {len(sorted_dates)}")
+
+# Display preview
+print("\nPreview (first 15 rows):")
+print(df.head(15).to_string(index=False))
+
+# Show some statistics
+print("\nCommon holidays (dates with most currencies closed):")
+holiday_counts = {}
+for date in sorted_dates:
+    count = sum(1 for currency in currencies if all_holidays[currency].get(date, ''))
+    if count > 1:
+        holiday_counts[date] = count
+
+for date, count in sorted(holiday_counts.items(), key=lambda x: x[1], reverse=True)[:5]:
+    print(f"  {date.strftime('%Y-%m-%d')}: {count} currencies closed")
+```
+
+if **name** == “**main**”:
+main()
