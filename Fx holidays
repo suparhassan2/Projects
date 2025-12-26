@@ -3,50 +3,32 @@ import pandas as pd
 
 year = 2026
 
-# Map ISO currency -> financial market code used by python-holidays
-# (examples; adjust to your exact venues if needed)
 currency_market_map = {
-    "USD": "NYSE",   # US FX/settlement broadly aligned with US financial holidays [web:3][web:15]
-    "CAD": "TSX",    # Toronto Stock Exchange financial calendar
-    "GBP": "LSE",    # London Stock Exchange financial calendar [web:3][web:15]
-    "EUR": "TARGET", # ECB TARGET settlement calendar [web:3][web:15]
-    "CHF": "SIX",    # SIX Swiss Exchange
-    "DKK": "CSE",    # Copenhagen Stock Exchange
-    "NOK": "OSE",    # Oslo Stock Exchange
-    "JPY": "TSE",    # Tokyo Stock Exchange
-    "SGD": "SGX",    # Singapore Exchange
-    "AUD": "ASX",    # Australian Securities Exchange
-    "NZD": "NZX",    # New Zealand Exchange
+    "USD": "NYSE",
+    "CAD": "TSX",
+    "GBP": "LSE",
+    "EUR": "TARGET",
+    "CHF": "SIX",
+    "DKK": "CSE",
+    "NOK": "OSE",
+    "JPY": "TSE",
+    "SGD": "SGX",
+    "AUD": "ASX",
+    "NZD": "NZX",
 }
 
-# Build dict: currency -> pandas.Series(index=date, value=holiday_name)
-holiday_series = {}
+# Build a DataFrame with one independent column per currency
+df = pd.DataFrame()
 
 for ccy, mkt in currency_market_map.items():
-    fh = holidays.financial_holidays(mkt, years=[year])  # financial market holidays for that venue [web:3][web:14]
-    # Convert to Series with date index and holiday names as values
-    s = pd.Series(
-        data=list(fh.values()),
-        index=pd.to_datetime(list(fh.keys())),
-        name=ccy
-    ).sort_index()
-    holiday_series[ccy] = s
+    fh = holidays.financial_holidays(mkt, years=[year])  # dict-like: {date: "Holiday Name"} [web:3][web:4]
+    # Sort dates and convert to strings for CSV
+    dates = sorted(fh.keys())
+    # Represent this currency as a column of its own holiday dates
+    df[ccy] = [d.isoformat() for d in dates]
 
-# Union of all holiday dates across all currencies
-all_dates = sorted(
-    set().union(*[set(s.index) for s in holiday_series.values()])
-)
+# Replace NaN with empty string so CSV cells are blank rather than 'NaN' [web:32]
+df = df.fillna("")
 
-# Build DataFrame with one column per currency
-df = pd.DataFrame(index=all_dates)
-
-for ccy, s in holiday_series.items():
-    # Reindex to union of dates; keep holiday name where applicable, NaN otherwise
-    df[ccy] = s.reindex(all_dates)
-
-# Optional: make the date a normal column instead of index
-df = df.reset_index().rename(columns={"index": "Date"})
-
-# Write to CSV
-df.to_csv("fx_trading_holidays_2026.csv", index=False)
+df.to_csv("fx_trading_holidays_2026_per_currency_column.csv", index=False)
 print(df.head())
