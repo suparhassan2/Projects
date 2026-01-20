@@ -1,0 +1,386 @@
+import pandas as pd
+import numpy as np
+from pathlib import Path
+from typing import Dict, Tuple, List
+import sys
+
+# ============================================================================
+
+# CONFIGURATION
+
+# ============================================================================
+
+# Strike Price Multipliers - adjust these based on your products
+
+STRIKE_MULTIPLIERS = {
+‘ES’: 1,      # E-mini S&P 500
+‘NQ’: 0.01,   # E-mini NASDAQ
+‘YM’: 1,      # E-mini Dow
+‘RTY’: 1,     # E-mini Russell 2000
+‘GC’: 0.1,    # Gold
+‘SI’: 0.001,  # Silver
+‘CL’: 0.01,   # Crude Oil
+‘NG’: 0.001,  # Natural Gas
+# Add more products as needed
+}
+
+# Settlement Price Multipliers - adjust these based on your products
+
+SETTLEMENT_MULTIPLIERS = {
+‘ES’: 1,
+‘NQ’: 0.01,
+‘YM’: 1,
+‘RTY’: 1,
+‘GC’: 0.1,
+‘SI’: 0.001,
+‘CL’: 0.01,
+‘NG’: 0.001,
+# Add more products as needed
+}
+
+# Default multipliers if product not found in mapping
+
+DEFAULT_STRIKE_MULTIPLIER = 1
+DEFAULT_SETTLEMENT_MULTIPLIER = 1
+
+# ============================================================================
+
+# CORE FUNCTIONS
+
+# ============================================================================
+
+def load_file(filepath: str) -> pd.DataFrame:
+“”“Load Excel or CSV file into DataFrame.”””
+path = Path(filepath)
+if not path.exists():
+raise FileNotFoundError(f”File not found: {filepath}”)
+
+```
+if path.suffix.lower() in ['.xlsx', '.xls']:
+    return pd.read_excel(filepath)
+elif path.suffix.lower() == '.csv':
+    return pd.read_csv(filepath)
+else:
+    raise ValueError(f"Unsupported file format: {path.suffix}")
+```
+
+def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
+“”“Normalize column names to handle variations.”””
+df.columns = df.columns.str.strip()
+return df
+
+def get_product_code_xtp(row: pd.Series) -> str:
+“”“Get product code from XTP file using fallback logic.”””
+clearing_code = row.get(‘Clearing Code’, ‘’)
+exchange_clearing_code = row.get(‘Exchange Clearing Code’, ‘’)
+
+```
+# Use Clearing Code if not blank, otherwise use Exchange Clearing Code
+if pd.notna(clearing_code) and str(clearing_code).strip():
+    return str(clearing_code).strip()
+elif pd.notna(exchange_clearing_code) and str(exchange_clearing_code).strip():
+    return str(exchange_clearing_code).strip()
+else:
+    return ''
+```
+
+def apply_multiplier(value: float, product_code: str, multiplier_dict: Dict[str, float], default: float) -> float:
+“”“Apply product-specific multiplier to a value.”””
+if pd.isna(value):
+return np.nan
+
+```
+multiplier = multiplier_dict.get(product_code, default)
+return float(value) * multiplier
+```
+
+def prepare_xtp_data(df: pd.DataFrame) -> pd.DataFrame:
+“”“Prepare XTP data with standardized columns.”””
+df = normalize_column_names(df)
+
+```
+# Create product code column
+df['Product_Code'] = df.apply(get_product_code_xtp, axis=1)
+
+# Standardize column names
+required_cols = {
+    'Account': ['Account', 'Account Number', 'Acct'],
+    'Strike_Price': ['Strike Price', 'Strike', 'StrikePrice'],
+    'Settlement_Price': ['Settlement Price', 'Settlement', 'SettlementPrice', 'Settle Price'],
+    'Quantity': ['Quantity', 'Qty', 'Position']
+}
+
+result = pd.DataFrame()
+result['Product_Code'] = df['Product_Code']
+
+for std_name, possible_names in required_cols.items():
+    found = False
+    for col in possible_names:
+        if col in df.columns:
+            result[std_name] = df[col]
+            found = True
+            break
+    if not found:
+        raise ValueError(f"Could not find column for {std_name} in XTP file. Expected one of: {possible_names}")
+
+# Apply multipliers
+result['Adjusted_Strike'] = result.apply(
+    lambda row: apply_multiplier(row['Strike_Price'], row['Product_Code'], 
+                                 STRIKE_MULTIPLIERS, DEFAULT_STRIKE_MULTIPLIER),
+    axis=1
+)
+
+result['Adjusted_Settlement'] = result.apply(
+    lambda row: apply_multiplier(row['Settlement_Price'], row['Product_Code'], 
+                                 SETTLEMENT_MULTIPLIERS, DEFAULT_SETTLEMENT_MULTIPLIER),
+    axis=1
+)
+
+result['Source'] = 'XTP'
+return result
+```
+
+def prepare_jpm_data(df: pd.DataFrame) -> pd.DataFrame:
+“”“Prepare JPM data with standardized columns.”””
+df = normalize_column_names(df)
+
+```
+# Standardize column names
+required_cols = {
+    'Account': ['Account', 'Account Number', 'Acct'],
+    'Product_Code': ['Product Code', 'ProductCode', 'Product'],
+    'Strike_Price': ['Strike Price', 'Strike', 'StrikePrice'],
+    'Settlement_Price': ['Settlement Price', 'Settlement', 'SettlementPrice', 'Settle Price'],
+    'Quantity': ['Quantity', 'Qty', 'Position']
+}
+
+result = pd.DataFrame()
+
+for std_name, possible_names in required_cols.items():
+    found = False
+    for col in possible_names:
+        if col in df.columns:
+            result[std_name] = df[col]
+            found = True
+            break
+    if not found:
+        raise ValueError(f"Could not find column for {std_name} in JPM file. Expected one of: {possible_names}")
+
+# Apply multipliers
+result['Adjusted_Strike'] = result.apply(
+    lambda row: apply_multiplier(row['Strike_Price'], row['Product_Code'], 
+                                 STRIKE_MULTIPLIERS, DEFAULT_STRIKE_MULTIPLIER),
+    axis=1
+)
+
+result['Adjusted_Settlement'] = result.apply(
+    lambda row: apply_multiplier(row['Settlement_Price'], row['Product_Code'], 
+                                 SETTLEMENT_MULTIPLIERS, DEFAULT_SETTLEMENT_MULTIPLIER),
+    axis=1
+)
+
+result['Source'] = 'JPM'
+return result
+```
+
+def aggregate_positions(df: pd.DataFrame) -> pd.DataFrame:
+“”“Aggregate positions by matching criteria.”””
+# Group by matching criteria and sum quantities
+grouped = df.groupby([
+‘Account’,
+‘Product_Code’,
+‘Adjusted_Strike’,
+‘Adjusted_Settlement’
+], dropna=False).agg({
+‘Quantity’: ‘sum’,
+‘Strike_Price’: ‘first’,
+‘Settlement_Price’: ‘first’,
+‘Source’: ‘first’
+}).reset_index()
+
+```
+return grouped
+```
+
+def reconcile_positions(xtp_agg: pd.DataFrame, jpm_agg: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+“”“Reconcile aggregated positions between XTP and JPM.”””
+
+```
+# Merge on matching criteria
+merge_keys = ['Account', 'Product_Code', 'Adjusted_Strike', 'Adjusted_Settlement']
+
+merged = pd.merge(
+    xtp_agg, jpm_agg,
+    on=merge_keys,
+    how='outer',
+    suffixes=('_XTP', '_JPM'),
+    indicator=True
+)
+
+# Fill NaN quantities with 0
+merged['Quantity_XTP'] = merged['Quantity_XTP'].fillna(0)
+merged['Quantity_JPM'] = merged['Quantity_JPM'].fillna(0)
+
+# Calculate difference
+merged['Difference'] = merged['Quantity_XTP'] - merged['Quantity_JPM']
+
+# Categorize results
+matched = merged[merged['Difference'] == 0].copy()
+breaks = merged[merged['Difference'] != 0].copy()
+
+# Separate XTP-only and JPM-only
+xtp_only = breaks[breaks['_merge'] == 'left_only'].copy()
+jpm_only = breaks[breaks['_merge'] == 'right_only'].copy()
+quantity_breaks = breaks[breaks['_merge'] == 'both'].copy()
+
+return matched, breaks, (xtp_only, jpm_only, quantity_breaks)
+```
+
+def format_output(df: pd.DataFrame, output_type: str) -> pd.DataFrame:
+“”“Format output DataFrame for reporting.”””
+if len(df) == 0:
+return df
+
+```
+# Select and rename columns for clarity
+output_cols = {
+    'Account': 'Account',
+    'Product_Code': 'Product Code',
+    'Strike_Price_XTP': 'Strike (XTP)',
+    'Strike_Price_JPM': 'Strike (JPM)',
+    'Adjusted_Strike': 'Adj Strike',
+    'Settlement_Price_XTP': 'Settlement (XTP)',
+    'Settlement_Price_JPM': 'Settlement (JPM)',
+    'Adjusted_Settlement': 'Adj Settlement',
+    'Quantity_XTP': 'Qty XTP',
+    'Quantity_JPM': 'Qty JPM',
+    'Difference': 'Difference'
+}
+
+available_cols = [col for col in output_cols.keys() if col in df.columns]
+result = df[available_cols].copy()
+result.columns = [output_cols[col] for col in available_cols]
+
+return result
+```
+
+def generate_summary_stats(matched: pd.DataFrame, breaks: pd.DataFrame,
+xtp_total: int, jpm_total: int) -> Dict:
+“”“Generate summary statistics for the reconciliation.”””
+return {
+‘Total XTP Records’: xtp_total,
+‘Total JPM Records’: jpm_total,
+‘Matched Records’: len(matched),
+‘Breaks’: len(breaks),
+‘Match Rate (%)’: round(len(matched) / max(xtp_total, jpm_total, 1) * 100, 2)
+}
+
+# ============================================================================
+
+# MAIN EXECUTION
+
+# ============================================================================
+
+def reconcile(xtp_file: str, jpm_file: str, output_file: str = ‘reconciliation_report.xlsx’):
+“”“Main reconciliation function.”””
+
+```
+print("="*80)
+print("POSITION RECONCILIATION: XTP vs JPM")
+print("="*80)
+
+# Load files
+print("\n[1/6] Loading files...")
+xtp_raw = load_file(xtp_file)
+jpm_raw = load_file(jpm_file)
+print(f"  ✓ XTP: {len(xtp_raw)} records loaded")
+print(f"  ✓ JPM: {len(jpm_raw)} records loaded")
+
+# Prepare data
+print("\n[2/6] Preparing and standardizing data...")
+xtp_prep = prepare_xtp_data(xtp_raw)
+jpm_prep = prepare_jpm_data(jpm_raw)
+print(f"  ✓ Data prepared and multipliers applied")
+
+# Aggregate positions
+print("\n[3/6] Aggregating positions...")
+xtp_agg = aggregate_positions(xtp_prep)
+jpm_agg = aggregate_positions(jpm_prep)
+print(f"  ✓ XTP: {len(xtp_agg)} unique position groups")
+print(f"  ✓ JPM: {len(jpm_agg)} unique position groups")
+
+# Reconcile
+print("\n[4/6] Reconciling positions...")
+matched, breaks, (xtp_only, jpm_only, qty_breaks) = reconcile_positions(xtp_agg, jpm_agg)
+
+# Generate summary
+print("\n[5/6] Generating summary statistics...")
+stats = generate_summary_stats(matched, breaks, len(xtp_agg), len(jpm_agg))
+
+# Print summary
+print("\n" + "="*80)
+print("RECONCILIATION SUMMARY")
+print("="*80)
+for key, value in stats.items():
+    print(f"{key:.<40} {value}")
+print("\nBreakdown of Breaks:")
+print(f"  • XTP Only (not in JPM):....................... {len(xtp_only)}")
+print(f"  • JPM Only (not in XTP):....................... {len(jpm_only)}")
+print(f"  • Quantity Mismatches:......................... {len(qty_breaks)}")
+
+# Export results
+print(f"\n[6/6] Exporting results to {output_file}...")
+with pd.ExcelWriter(output_file, engine='openpyxl') as writer:
+    # Summary sheet
+    summary_df = pd.DataFrame([stats])
+    summary_df.to_excel(writer, sheet_name='Summary', index=False)
+    
+    # Matched positions
+    if len(matched) > 0:
+        format_output(matched, 'matched').to_excel(writer, sheet_name='Matched', index=False)
+    
+    # All breaks
+    if len(breaks) > 0:
+        format_output(breaks, 'breaks').to_excel(writer, sheet_name='All Breaks', index=False)
+    
+    # XTP only
+    if len(xtp_only) > 0:
+        format_output(xtp_only, 'xtp_only').to_excel(writer, sheet_name='XTP Only', index=False)
+    
+    # JPM only
+    if len(jpm_only) > 0:
+        format_output(jpm_only, 'jpm_only').to_excel(writer, sheet_name='JPM Only', index=False)
+    
+    # Quantity breaks
+    if len(qty_breaks) > 0:
+        format_output(qty_breaks, 'qty_breaks').to_excel(writer, sheet_name='Quantity Breaks', index=False)
+
+print(f"  ✓ Report saved successfully")
+print("\n" + "="*80)
+print("RECONCILIATION COMPLETE")
+print("="*80)
+```
+
+if **name** == “**main**”:
+# Example usage
+if len(sys.argv) >= 3:
+xtp_file = sys.argv[1]
+jpm_file = sys.argv[2]
+output_file = sys.argv[3] if len(sys.argv) > 3 else ‘reconciliation_report.xlsx’
+reconcile(xtp_file, jpm_file, output_file)
+else:
+print(“Usage: python reconciliation.py <xtp_file> <jpm_file> [output_file]”)
+print(”\nExample:”)
+print(”  python reconciliation.py 1.XTP.xlsx 2.JPM.xlsx report.xlsx”)
+print(”\nOr update the file paths below and run directly:”)
+print()
+
+```
+    # Update these paths for direct execution
+    XTP_FILE = "1.XTP.xlsx"
+    JPM_FILE = "2.JPM.xlsx"
+    OUTPUT_FILE = "reconciliation_report.xlsx"
+    
+    # Uncomment to run with hardcoded paths
+    # reconcile(XTP_FILE, JPM_FILE, OUTPUT_FILE)
+```
