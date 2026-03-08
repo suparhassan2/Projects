@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Noto+Sans:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --jade: #2D6A4F;
+  --jade-light: #52B788;
+  --jade-pale: #D8F3DC;
+  --red: #C0392B;
+  --red-dark: #922B21;
+  --red-light: #F1948A;
+  --cream: #FDF6E3;
+  --cream-dark: #F5EDD4;
+  --ivory: #FFFFF0;
+  --wood: #8B6914;
+  --wood-light: #C4983A;
+  --brown: #5D4037;
+  --gold: #D4AC0D;
+  --text-dark: #2C1810;
+  --text-medium: #5D4037;
+  --text-light: #8D6E63;
+  --shadow: rgba(44, 24, 16, 0.15);
+  --shadow-strong: rgba(44, 24, 16, 0.3);
+  --border-radius: 12px;
+  --border-radius-sm: 8px;
+  --transition: all 0.25s ease;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+  background-color: var(--cream);
+  color: var(--text-dark);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Noto Serif', serif;
+  line-height: 1.3;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--wood-light);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--wood);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.scale-in {
+  animation: scaleIn 0.3s ease forwards;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
