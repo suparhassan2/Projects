@@ -441,7 +441,7 @@
     <input type="file" id="file-input" accept=".csv,.xlsx,.xls,.pdf,.txt">
     <div class="file-badge" id="file-badge">📎 <span id="file-name"></span></div>
 
-    <textarea id="paste-area" placeholder="...or paste position data here&#10;&#10;Ticker | Qty | Market Value | ADV&#10;AAPL   | 5000 | 850000 | 2100000&#10;TSLA   | 1200 | 240000 | 890000" style="
+    <textarea id="paste-area" placeholder="...or paste position data here&#10;&#10;Expected columns:&#10;Account Number, Security Symbol, Security Description,&#10;Settled Quantity, Trade Quantity, Safekeeping Quantity,&#10;Position Ask Price, Position Bid Price, Position Close Price,&#10;Position Market Value, Position Loan Value, Price Currency,&#10;Account Type, NDPI Flag, Business Date, Client Code..." style="
       margin: 0 16px 12px;
       background: var(--bg);
       border: 1px solid var(--border);
@@ -464,7 +464,7 @@
         <input type="checkbox" checked value="days_to_liquidate">
         <div class="toggle-box"></div>
         <div class="metric-toggle-text">Days to Liquidate (DTL)
-          <small>Position size / (ADV × participation rate)</small>
+          <small>From Settled Qty at 10/15/20% participation</small>
         </div>
       </label>
 
@@ -472,7 +472,7 @@
         <input type="checkbox" checked value="adv_ratio">
         <div class="toggle-box"></div>
         <div class="metric-toggle-text">ADV Ratio
-          <small>Position as % of avg daily volume</small>
+          <small>Settled Quantity vs estimated daily volume</small>
         </div>
       </label>
 
@@ -480,7 +480,7 @@
         <input type="checkbox" checked value="market_impact">
         <div class="toggle-box"></div>
         <div class="metric-toggle-text">Market Impact Estimate
-          <small>√-model: σ × √(Q/ADV)</small>
+          <small>√-model using Ask/Bid/Close spread as proxy</small>
         </div>
       </label>
 
@@ -488,7 +488,7 @@
         <input type="checkbox" value="liquidity_score">
         <div class="toggle-box"></div>
         <div class="metric-toggle-text">Relative Liquidity Score
-          <small>Ranked vs peer group by volume</small>
+          <small>Ranked 1–5 by Market Value + spread</small>
         </div>
       </label>
 
@@ -498,15 +498,15 @@
         <input type="checkbox" checked value="concentration">
         <div class="toggle-box"></div>
         <div class="metric-toggle-text">Concentration Risk
-          <small>% of portfolio per position / HHI index</small>
+          <small>Position Market Value % of total + HHI</small>
         </div>
       </label>
 
       <label class="metric-toggle">
         <input type="checkbox" checked value="loan_value">
         <div class="toggle-box"></div>
-        <div class="metric-toggle-text">Loan Value & Margin Risk
-          <small>Estimated ALV and haircut per position</small>
+        <div class="metric-toggle-text">Loan Value & Haircut Analysis
+          <small>Position Loan Value vs Market Value gap</small>
         </div>
       </label>
 
@@ -514,7 +514,7 @@
         <input type="checkbox" value="sector_conc">
         <div class="toggle-box"></div>
         <div class="metric-toggle-text">Sector Concentration
-          <small>Exposure clustering by industry</small>
+          <small>Grouped by Security Description / ISM Code</small>
         </div>
       </label>
 
@@ -524,7 +524,7 @@
         <input type="checkbox" checked value="stress_test">
         <div class="toggle-box"></div>
         <div class="metric-toggle-text">Stress Test (Volume Shock)
-          <small>DTL recalculated at 50% & 80% volume drop</small>
+          <small>DTL at 50% & 80% volume drop scenarios</small>
         </div>
       </label>
 
@@ -532,15 +532,15 @@
         <input type="checkbox" checked value="margin_call_risk">
         <div class="toggle-box"></div>
         <div class="metric-toggle-text">Margin Call Sensitivity
-          <small>% price drop that triggers margin call</small>
+          <small>LTV trigger using Loan Value / Market Value</small>
         </div>
       </label>
 
       <label class="metric-toggle">
         <input type="checkbox" value="vol_trend">
         <div class="toggle-box"></div>
-        <div class="metric-toggle-text">Volume Trend Deterioration
-          <small>20d vs 60d ADV divergence flag</small>
+        <div class="metric-toggle-text">Settlement & Trade Gap Risk
+          <small>Trade Quantity vs Settled Quantity divergence</small>
         </div>
       </label>
     </div>
@@ -563,12 +563,12 @@
         <div style="font-size:32px; opacity:0.2">◈</div>
         <p>Upload a position report or paste data on the left, select your metrics, and run the analysis.</p>
         <div class="placeholder-grid">
-          <div class="placeholder-chip">DAYS TO LIQUIDATE</div>
-          <div class="placeholder-chip">ADV RATIO</div>
-          <div class="placeholder-chip">CONCENTRATION</div>
-          <div class="placeholder-chip">MARGIN RISK</div>
-          <div class="placeholder-chip">STRESS TEST</div>
+          <div class="placeholder-chip">SETTLED QUANTITY</div>
           <div class="placeholder-chip">LOAN VALUE</div>
+          <div class="placeholder-chip">MARKET VALUE</div>
+          <div class="placeholder-chip">ASK / BID / CLOSE</div>
+          <div class="placeholder-chip">TRADE QTY GAP</div>
+          <div class="placeholder-chip">STRESS TEST</div>
         </div>
       </div>
       <div id="output-content"></div>
@@ -609,38 +609,48 @@
 
   function buildPrompt(data, metrics) {
     const metricDescriptions = {
-      days_to_liquidate: "Days to Liquidate (DTL): Calculate estimated days to exit each position assuming 10%, 15%, and 20% daily volume participation rates. Flag any position requiring >5 days.",
-      adv_ratio: "ADV Ratio: Calculate each position size as a percentage of Average Daily Volume. Flag positions >10% ADV as elevated and >20% ADV as high risk.",
-      market_impact: "Market Impact Estimate: Using the square-root market impact model (Impact ≈ σ × √(Q/ADV)), estimate the price impact of liquidating each position. If volatility data is not provided, note assumptions made.",
-      liquidity_score: "Relative Liquidity Score: Rank positions 1–5 based on relative liquidity compared to the overall portfolio. Consider ADV, position size, and asset type.",
-      concentration: "Concentration Risk: Calculate each position as a % of total portfolio value. Calculate the Herfindahl-Hirschman Index (HHI) for the portfolio. Flag any single position >10% as concentrated and >20% as highly concentrated.",
-      loan_value: "Loan Value & Margin Risk: Estimate loan value for each position using standard loan rates (equities ~50-70%, bonds ~80-90%, small caps ~20-40%). Calculate total Account Loan Value and identify positions with low loan rates.",
-      sector_conc: "Sector Concentration: Group positions by sector/industry and calculate total exposure per sector. Flag sectors exceeding 25% of portfolio value.",
-      stress_test: "Stress Test (Volume Shock): Recalculate DTL scenarios assuming volume drops of 50% and 80% (simulating stressed market conditions like March 2020). Identify which positions become critically illiquid.",
-      margin_call_risk: "Margin Call Sensitivity: For each leveraged position, calculate the approximate % price decline that would trigger a margin call assuming standard maintenance margin of 25%. Identify the most vulnerable positions.",
-      vol_trend: "Volume Trend Deterioration: If time-series volume data is present, compare 20-day vs 60-day ADV. Flag positions where 20d ADV is more than 20% below the 60d ADV as showing deteriorating liquidity."
+      days_to_liquidate: "Days to Liquidate (DTL): Using 'Settled Quantity' (or 'Safekeeping Quantity') as position size and 'Position Market Value' for context, estimate DTL at 10%, 15%, and 20% daily volume participation rates. If ADV is absent, estimate it from Position Market Value and typical turnover ratios and state the assumption. Flag any position requiring >5 days to exit.",
+      adv_ratio: "ADV Ratio: Using 'Settled Quantity' and 'Position Market Value', calculate each position relative to estimated Average Daily Volume. If ADV is not a column, derive a proxy and note the assumption. Flag positions where estimated ADV ratio exceeds 10% (elevated) or 20% (high risk).",
+      market_impact: "Market Impact Estimate: Apply the square-root model (Impact = sigma x sqrt(Q/ADV)) using 'Settled Quantity' as Q. Derive spread-based volatility proxy from 'Position Ask Price', 'Position Bid Price', and 'Position Close Price': Spread = (Ask - Bid) / Close. State all assumptions.",
+      liquidity_score: "Relative Liquidity Score: Rank each position 1-5 using 'Position Market Value', the Ask/Bid/Close spread, and 'Settled Quantity'. Narrow spread + large market value = liquid; wide spread + large quantity = illiquid. Show ranking table.",
+      concentration: "Concentration Risk: Using 'Position Market Value', calculate each security's weight as % of total portfolio. Group by 'Account Number' or 'Account Name' if multiple accounts exist. Calculate HHI = sum of (weight squared). Flag positions >10% as concentrated, >20% as highly concentrated.",
+      loan_value: "Loan Value and Margin Risk: Use the 'Position Loan Value' column directly. Calculate Haircut % = 1 - (Position Loan Value / Position Market Value) per position. Sum to get total Account Loan Value. Flag positions with haircuts above 50%. Highlight the total collateral gap (Market Value minus Loan Value).",
+      sector_conc: "Sector Concentration: Group positions by 'Security Description' keywords or 'ISM Code' to infer sector/asset class. Calculate total 'Position Market Value' per sector. Flag any sector exceeding 25% of total portfolio. Note inferred groupings where sector is not explicit.",
+      stress_test: "Stress Test (Volume Shock): Recalculate DTL assuming volume drops of 50% and 80% from baseline using 'Settled Quantity' and 'Position Market Value'. Flag positions with DTL >10 days under 80% stress as critically illiquid.",
+      margin_call_risk: "Margin Call Sensitivity: Use 'Position Market Value' and 'Position Loan Value'. Calculate LTV = Loan Value / Market Value. Trigger Drop % = 1 - (Loan Value / Market Value). Flag positions where a less than 20% price drop would breach LTV of 100% as HIGH risk.",
+      vol_trend: "Volume Trend and Settlement Risk: Compare 'Trade Quantity' vs 'Settled Quantity' per security. A large gap indicates settlement delays or failed trades. Flag securities where Trade Quantity significantly exceeds Settled Quantity as a liquidity and operational risk."
     };
 
     const selectedDescriptions = metrics.map(m => `- **${m.replace(/_/g,' ').toUpperCase()}**: ${metricDescriptions[m]}`).join('\n');
 
     return `You are an expert risk analyst specializing in portfolio liquidity and position risk. Analyze the following position report and produce a structured risk assessment.
 
+## COLUMN REFERENCE
+The report uses these exact column names:
+Account Number, Account RR Code, Account Short Name, Account Name, Account Type,
+ISM Code, Security CUSIP, Security Symbol, Security Description, NDPI Flag,
+Broker OVR Flag, NDPI Process Date, NDPI Effective Date, NDPI End Date,
+NDPI REG Broker ID, NDPI User ID, Settled Quantity, Trade Quantity,
+Safekeeping Quantity, Position Ask Price, Position Bid Price, Position Close Price,
+Price Currency, Position Market Value, Position Loan Value, Business Date,
+Client Code, Broker Code
+
 ## POSITION DATA
 ${data}
 
 ## ANALYSIS REQUIRED
-For each of the following metrics, provide a clear, structured analysis. Where data is missing to calculate a metric precisely, state your assumptions clearly and provide estimates or ranges.
+For each metric below, provide clear structured analysis. Where a required data point is absent, state your assumption and proceed with a reasoned estimate.
 
 ${selectedDescriptions}
 
 ## OUTPUT FORMAT
-Structure your response with clear sections for each metric. For each position analyzed:
-1. Provide a summary table where applicable
-2. Highlight the TOP 3 risk flags across the entire portfolio in a dedicated "⚠ Key Risk Flags" section
-3. End with an "Executive Summary" of 3–5 sentences covering the portfolio's overall liquidity and risk profile
-4. Use a risk rating of LOW / MEDIUM / HIGH / CRITICAL for each major finding
+1. For each metric: brief method explanation then a summary table by Security Symbol
+2. A dedicated section listing the TOP 3 most urgent risk flags found
+3. An Executive Summary of 4-5 sentences on the overall liquidity and risk profile
+4. Apply a rating of LOW / MEDIUM / HIGH / CRITICAL to each major finding
+5. Always compare Position Loan Value to Position Market Value to highlight haircut gaps
 
-Be specific, quantitative where possible, and actionable. Focus on what a portfolio manager needs to know to make decisions.`;
+Be specific, quantitative, and actionable. Focus on what a portfolio manager needs to act on immediately.`;
   }
 
   function simpleMarkdown(text) {
