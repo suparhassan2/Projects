@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Position Risk Analyzer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111418;
+    --surface2: #181c22;
+    --border: #1e242c;
+    --accent: #00e5a0;
+    --accent2: #ff6b35;
+    --warn: #f5c518;
+    --text: #d4dbe6;
+    --muted: #5a6478;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+  }
+
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  header h1 {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  header span {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+    letter-spacing: 0.08em;
+  }
+
+  .main {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+  }
+
+  .panel-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .upload-zone {
+    margin: 16px;
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: var(--bg);
+  }
+  .upload-zone:hover { border-color: var(--accent); background: #0d1a14; }
+  .upload-zone.dragover { border-color: var(--accent); background: #0d1a14; }
+
+  .upload-icon {
+    font-size: 22px; margin-bottom: 8px;
+    display: block;
+  }
+  .upload-zone p {
+    font-size: 12px; color: var(--muted);
+    font-family: var(--mono);
+    line-height: 1.6;
+  }
+  .upload-zone p strong { color: var(--accent); }
+
+  #file-input { display: none; }
+
+  .file-badge {
+    display: none;
+    margin: 0 16px 8px;
+    padding: 8px 12px;
+    background: #0d1a14;
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    align-items: center;
+    gap: 8px;
+  }
+  .file-badge.visible { display: flex; }
+
+  .metrics-section {
+    padding: 0 16px 8px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .metrics-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 14px 0 10px;
+  }
+
+  .metric-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    margin-bottom: 4px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .metric-toggle:hover { background: var(--surface2); }
+  .metric-toggle input { display: none; }
+
+  .toggle-box {
+    width: 14px; height: 14px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .metric-toggle input:checked + .toggle-box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .toggle-box::after {
+    content: '';
+    width: 7px; height: 5px;
+    border-left: 1.5px solid var(--bg);
+    border-bottom: 1.5px solid var(--bg);
+    transform: rotate(-45deg) translateY(-1px);
+    display: none;
+  }
+  .metric-toggle input:checked + .toggle-box::after { display: block; }
+
+  .metric-toggle-text {
+    font-size: 12px;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.3;
+  }
+  .metric-toggle-text small {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-top: 2px;
+  }
+
+  .run-btn {
+    margin: 12px 16px 16px;
+    padding: 12px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .run-btn:hover { opacity: 0.88; }
+  .run-btn:active { transform: scale(0.98); }
+  .run-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* RIGHT PANEL */
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .output-header {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    flex-shrink: 0;
+  }
+  .status-dot.active { background: var(--accent); animation: pulse 1.5s infinite; }
+  .status-dot.done { background: var(--accent); }
+  .status-dot.error { background: var(--accent2); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .status-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .copy-btn {
+    margin-left: auto;
+    padding: 5px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: none;
+  }
+  .copy-btn.visible { display: block; }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .output-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 32px;
+  }
+
+  .placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 16px;
+    color: var(--muted);
+  }
+
+  .placeholder-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    max-width: 360px;
+    margin-top: 8px;
+  }
+
+  .placeholder-chip {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-align: center;
+  }
+
+  .placeholder p {
+    font-size: 13px;
+    text-align: center;
+    max-width: 280px;
+    line-height: 1.6;
+  }
+
+  #output-content {
+    display: none;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+  #output-content.visible { display: block; }
+
+  /* Rendered markdown styles */
+  #output-content h2 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 28px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  #output-content h2:first-child { margin-top: 0; }
+
+  #output-content h3 {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--warn);
+    margin: 16px 0 8px;
+    letter-spacing: 0.06em;
+  }
+
+  #output-content p { margin-bottom: 10px; }
+
+  #output-content strong { color: #fff; font-weight: 500; }
+
+  #output-content ul, #output-content ol {
+    padding-left: 18px;
+    margin-bottom: 10px;
+  }
+  #output-content li { margin-bottom: 4px; }
+
+  #output-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  #output-content th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  #output-content td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  #output-content tr:last-child td { border-bottom: none; }
+  #output-content tr:hover td { background: var(--surface2); }
+
+  #output-content code {
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    border: 1px solid var(--border);
+  }
+
+  #output-content blockquote {
+    border-left: 2px solid var(--accent2);
+    padding: 8px 16px;
+    margin: 14px 0;
+    background: #1a1208;
+    border-radius: 0 3px 3px 0;
+    font-size: 13px;
+    color: var(--warn);
+  }
+
+  .streaming-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--accent);
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: blink 0.8s infinite;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  @media (max-width: 700px) {
+    .main { grid-template-columns: 1fr; }
+    .left-panel { border-right: none; border-bottom: 1px solid var(--border); max-height: 420px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark"></div>
+  <h1>Position Risk Analyzer</h1>
+  <span>RISK · LIQUIDITY · CONCENTRATION</span>
+</header>
+
+<div class="main">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="panel-header">Input & Configuration</div>
+
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+      <span class="upload-icon">⬆</span>
+      <p><strong>Upload position report</strong><br>CSV, Excel, PDF, or paste below<br><span style="color:#333">or click to browse</span></p>
+    </div>
+    <input type="file" id="file-input" accept=".csv,.xlsx,.xls,.pdf,.txt">
+    <div class="file-badge" id="file-badge">📎 <span id="file-name"></span></div>
+
+    <textarea id="paste-area" placeholder="...or paste position data here&#10;&#10;Ticker | Qty | Market Value | ADV&#10;AAPL   | 5000 | 850000 | 2100000&#10;TSLA   | 1200 | 240000 | 890000" style="
+      margin: 0 16px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.6;
+      resize: vertical;
+      min-height: 90px;
+      outline: none;
+      width: calc(100% - 32px);
+    " onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+
+    <div class="metrics-section">
+      <div class="metrics-label">Liquidity Metrics</div>
+
+      <label class="metric-toggle">
+        <input type="checkbox" checked value="days_to_liquidate">
+        <div class="toggle-box"></div>
+        <div class="metric-toggle-text">Days to Liquidate (DTL)
+          <small>Position size / (ADV × participation rate)</small>
+        </div>
+      </label>
+
+      <label class="metric-toggle">
+        <input type="checkbox" checked value="adv_ratio">
+        <div class="toggle-box"></div>
+        <div class="metric-toggle-text">ADV Ratio
+          <small>Position as % of avg daily volume</small>
+        </div>
+      </label>
+
+      <label class="metric-toggle">
+        <input type="checkbox" checked value="market_impact">
+        <div class="toggle-box"></div>
+        <div class="metric-toggle-text">Market Impact Estimate
+          <small>√-model: σ × √(Q/ADV)</small>
+        </div>
+      </label>
+
+      <label class="metric-toggle">
+        <input type="checkbox" value="liquidity_score">
+        <div class="toggle-box"></div>
+        <div class="metric-toggle-text">Relative Liquidity Score
+          <small>Ranked vs peer group by volume</small>
+        </div>
+      </label>
+
+      <div class="metrics-label">Concentration & Exposure</div>
+
+      <label class="metric-toggle">
+        <input type="checkbox" checked value="concentration">
+        <div class="toggle-box"></div>
+        <div class="metric-toggle-text">Concentration Risk
+          <small>% of portfolio per position / HHI index</small>
+        </div>
+      </label>
+
+      <label class="metric-toggle">
+        <input type="checkbox" checked value="loan_value">
+        <div class="toggle-box"></div>
+        <div class="metric-toggle-text">Loan Value & Margin Risk
+          <small>Estimated ALV and haircut per position</small>
+        </div>
+      </label>
+
+      <label class="metric-toggle">
+        <input type="checkbox" value="sector_conc">
+        <div class="toggle-box"></div>
+        <div class="metric-toggle-text">Sector Concentration
+          <small>Exposure clustering by industry</small>
+        </div>
+      </label>
+
+      <div class="metrics-label">Risk Flags</div>
+
+      <label class="metric-toggle">
+        <input type="checkbox" checked value="stress_test">
+        <div class="toggle-box"></div>
+        <div class="metric-toggle-text">Stress Test (Volume Shock)
+          <small>DTL recalculated at 50% & 80% volume drop</small>
+        </div>
+      </label>
+
+      <label class="metric-toggle">
+        <input type="checkbox" checked value="margin_call_risk">
+        <div class="toggle-box"></div>
+        <div class="metric-toggle-text">Margin Call Sensitivity
+          <small>% price drop that triggers margin call</small>
+        </div>
+      </label>
+
+      <label class="metric-toggle">
+        <input type="checkbox" value="vol_trend">
+        <div class="toggle-box"></div>
+        <div class="metric-toggle-text">Volume Trend Deterioration
+          <small>20d vs 60d ADV divergence flag</small>
+        </div>
+      </label>
+    </div>
+
+    <button class="run-btn" id="run-btn" onclick="runAnalysis()">
+      ▶ &nbsp; Run Risk Analysis
+    </button>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="output-header">
+      <div class="status-dot" id="status-dot"></div>
+      <span class="status-label" id="status-label">Awaiting input</span>
+      <button class="copy-btn" id="copy-btn" onclick="copyOutput()">⎘ Copy</button>
+    </div>
+
+    <div class="output-scroll" id="output-scroll">
+      <div class="placeholder" id="placeholder">
+        <div style="font-size:32px; opacity:0.2">◈</div>
+        <p>Upload a position report or paste data on the left, select your metrics, and run the analysis.</p>
+        <div class="placeholder-grid">
+          <div class="placeholder-chip">DAYS TO LIQUIDATE</div>
+          <div class="placeholder-chip">ADV RATIO</div>
+          <div class="placeholder-chip">CONCENTRATION</div>
+          <div class="placeholder-chip">MARGIN RISK</div>
+          <div class="placeholder-chip">STRESS TEST</div>
+          <div class="placeholder-chip">LOAN VALUE</div>
+        </div>
+      </div>
+      <div id="output-content"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Drag & drop
+  const zone = document.getElementById('upload-zone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  });
+
+  document.getElementById('file-input').addEventListener('change', e => {
+    if (e.target.files[0]) handleFile(e.target.files[0]);
+  });
+
+  let fileContent = '';
+  function handleFile(file) {
+    document.getElementById('file-name').textContent = file.name;
+    document.getElementById('file-badge').classList.add('visible');
+    const reader = new FileReader();
+    reader.onload = e => { fileContent = e.target.result; };
+    reader.readAsText(file);
+  }
+
+  function getSelectedMetrics() {
+    return Array.from(document.querySelectorAll('.metric-toggle input:checked'))
+      .map(cb => cb.value);
+  }
+
+  function buildPrompt(data, metrics) {
+    const metricDescriptions = {
+      days_to_liquidate: "Days to Liquidate (DTL): Calculate estimated days to exit each position assuming 10%, 15%, and 20% daily volume participation rates. Flag any position requiring >5 days.",
+      adv_ratio: "ADV Ratio: Calculate each position size as a percentage of Average Daily Volume. Flag positions >10% ADV as elevated and >20% ADV as high risk.",
+      market_impact: "Market Impact Estimate: Using the square-root market impact model (Impact ≈ σ × √(Q/ADV)), estimate the price impact of liquidating each position. If volatility data is not provided, note assumptions made.",
+      liquidity_score: "Relative Liquidity Score: Rank positions 1–5 based on relative liquidity compared to the overall portfolio. Consider ADV, position size, and asset type.",
+      concentration: "Concentration Risk: Calculate each position as a % of total portfolio value. Calculate the Herfindahl-Hirschman Index (HHI) for the portfolio. Flag any single position >10% as concentrated and >20% as highly concentrated.",
+      loan_value: "Loan Value & Margin Risk: Estimate loan value for each position using standard loan rates (equities ~50-70%, bonds ~80-90%, small caps ~20-40%). Calculate total Account Loan Value and identify positions with low loan rates.",
+      sector_conc: "Sector Concentration: Group positions by sector/industry and calculate total exposure per sector. Flag sectors exceeding 25% of portfolio value.",
+      stress_test: "Stress Test (Volume Shock): Recalculate DTL scenarios assuming volume drops of 50% and 80% (simulating stressed market conditions like March 2020). Identify which positions become critically illiquid.",
+      margin_call_risk: "Margin Call Sensitivity: For each leveraged position, calculate the approximate % price decline that would trigger a margin call assuming standard maintenance margin of 25%. Identify the most vulnerable positions.",
+      vol_trend: "Volume Trend Deterioration: If time-series volume data is present, compare 20-day vs 60-day ADV. Flag positions where 20d ADV is more than 20% below the 60d ADV as showing deteriorating liquidity."
+    };
+
+    const selectedDescriptions = metrics.map(m => `- **${m.replace(/_/g,' ').toUpperCase()}**: ${metricDescriptions[m]}`).join('\n');
+
+    return `You are an expert risk analyst specializing in portfolio liquidity and position risk. Analyze the following position report and produce a structured risk assessment.
+
+## POSITION DATA
+${data}
+
+## ANALYSIS REQUIRED
+For each of the following metrics, provide a clear, structured analysis. Where data is missing to calculate a metric precisely, state your assumptions clearly and provide estimates or ranges.
+
+${selectedDescriptions}
+
+## OUTPUT FORMAT
+Structure your response with clear sections for each metric. For each position analyzed:
+1. Provide a summary table where applicable
+2. Highlight the TOP 3 risk flags across the entire portfolio in a dedicated "⚠ Key Risk Flags" section
+3. End with an "Executive Summary" of 3–5 sentences covering the portfolio's overall liquidity and risk profile
+4. Use a risk rating of LOW / MEDIUM / HIGH / CRITICAL for each major finding
+
+Be specific, quantitative where possible, and actionable. Focus on what a portfolio manager needs to know to make decisions.`;
+  }
+
+  function simpleMarkdown(text) {
+    return text
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+      .replace(/^\| (.+) \|$/gm, (match) => {
+        const cells = match.split('|').filter(c => c.trim());
+        return '<tr>' + cells.map(c => `<td>${c.trim()}</td>`).join('') + '</tr>';
+      })
+      .replace(/(<tr>.+<\/tr>\n?)+/g, (block) => {
+        const rows = block.trim().split('\n');
+        const header = rows[0].replace(/<td>/g, '<th>').replace(/<\/td>/g, '</th>');
+        const body = rows.slice(1).join('\n');
+        return `<table><thead>${header}</thead><tbody>${body}</tbody></table>`;
+      })
+      .replace(/^[-*] (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>.+<\/li>\n?)+/g, block => `<ul>${block}</ul>`)
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/^(?!<[huptbcl])(.+)$/gm, (line) => line ? line : '')
+      .replace(/(<\/h[23]>|<\/table>|<\/ul>|<\/blockquote>)\n(<p>)?/g, '$1')
+  }
+
+  async function runAnalysis() {
+    const pasteData = document.getElementById('paste-area').value.trim();
+    const data = fileContent || pasteData;
+
+    if (!data) {
+      alert('Please upload a file or paste position data first.');
+      return;
+    }
+
+    const metrics = getSelectedMetrics();
+    if (metrics.length === 0) {
+      alert('Please select at least one metric to analyze.');
+      return;
+    }
+
+    const btn = document.getElementById('run-btn');
+    const dot = document.getElementById('status-dot');
+    const label = document.getElementById('status-label');
+    const outputEl = document.getElementById('output-content');
+    const placeholder = document.getElementById('placeholder');
+    const copyBtn = document.getElementById('copy-btn');
+
+    btn.disabled = true;
+    dot.className = 'status-dot active';
+    label.textContent = 'Analyzing positions...';
+    placeholder.style.display = 'none';
+    outputEl.classList.add('visible');
+    outputEl.innerHTML = '<span class="streaming-cursor"></span>';
+    copyBtn.classList.remove('visible');
+
+    const prompt = buildPrompt(data, metrics);
+    let fullText = '';
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          stream: true,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6);
+            if (data === '[DONE]') continue;
+            try {
+              const parsed = JSON.parse(data);
+              if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
+                fullText += parsed.delta.text;
+                outputEl.innerHTML = simpleMarkdown(fullText) + '<span class="streaming-cursor"></span>';
+                document.getElementById('output-scroll').scrollTop = document.getElementById('output-scroll').scrollHeight;
+              }
+            } catch {}
+          }
+        }
+      }
+
+      outputEl.innerHTML = simpleMarkdown(fullText);
+      dot.className = 'status-dot done';
+      label.textContent = 'Analysis complete';
+      copyBtn.classList.add('visible');
+
+    } catch (err) {
+      outputEl.innerHTML = `<p style="color:var(--accent2)">Error: ${err.message}</p>`;
+      dot.className = 'status-dot error';
+      label.textContent = 'Error — see output';
+    }
+
+    btn.disabled = false;
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('output-content').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = '✓ Copied';
+      setTimeout(() => btn.textContent = '⎘ Copy', 1500);
+    });
+  }
+</script>
+</body>
+</html>
