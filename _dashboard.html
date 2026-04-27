@@ -562,8 +562,8 @@ tfoot tr td { background: var(--sl-teal-pale); color: var(--sl-teal); font-weigh
                   <th>Name</th>
                   <th>Symbol</th>
                   <th>Security</th>
-                  <th class="num">Market Value</th>
-                  <th class="num">Conc. Ratio</th>
+                  <th class="num th-cad-equiv">Market Value (CAD)</th>
+                  <th class="num">Conc. Ratio (CAD)</th>
                   <th class="num">Days to Liq.</th>
                 </tr>
               </thead>
@@ -617,9 +617,9 @@ tfoot tr td { background: var(--sl-teal-pale); color: var(--sl-teal); font-weigh
                 <th>Ccy</th>
                 <th class="num">Quantity</th>
                 <th class="num">Close Price</th>
-                <th class="num">Position MV</th>
-                <th class="num">Position LV</th>
-                <th class="num">Acct Loan Val.</th>
+                <th class="num th-cad-equiv">Position MV (CAD)</th>
+                <th class="num th-cad-equiv">Position LV (CAD)</th>
+                <th class="num th-cad-equiv" title="CAD equivalent: E loan + F loan × FX rate">Acct Loan Val. CAD (E+F)</th>
                 <th class="num">Conc. Ratio</th>
                 <th class="num">≥ $100K</th>
                 <th class="num">≥ 30% Ratio</th>
@@ -692,7 +692,7 @@ tfoot tr td { background: var(--sl-teal-pale); color: var(--sl-teal); font-weigh
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-const INITIAL = {"summary":{"totalAccounts":24,"cadAccounts":12,"usdAccounts":12,"totalAlerts":6,"bothAlerts":3,"mvAlerts":0,"ratioAlerts":3,"totalMV":6510000.0,"totalLoan":2946000.0,"totalEquity":650650.0,"reportDate":"2024-04-24"},"accounts":[{"id":"1122E","num":1122,"rr":"S2BM","name":"YOUNG THOMAS","shortName":"THOMAS YOUNG","date":"20240424","ccy":"CAD","suffix":"E","loan":92000.0,"tdBal":184000.0,"sdBal":182700.0,"mv":202000.0,"equity":19300.0,"tdMarg":36800.0,"tdSec":33120.0,"client":"CL012","broker":"BR105"},{"id":"1122F","num":1122,"rr":"S2BM","name":"YOUNG THOMAS","shortName":"THOMAS YOUNG","date":"20240424","ccy":"USD","suffix":"F","loan":88000.0,"tdBal":176000.0,"sdBal":175100.0,"mv":195000.0,"equity":19900.0,"tdMarg":35200.0,"tdSec":31680.0,"client":"CL012","broker":"BR105"},{"id":"1121E","num":1121,"rr":"S2AM","name":"KING PATRICIA","shortName":"PATRICIA KING","date":"20240424","ccy":"CAD","suffix":"E","loan":135000.0,"tdBal":270000.0,"sdBal":268500.0,"mv":298000.0,"equity":29500.0,"tdMarg":54000.0,"tdSec":48600.0,"client":"CL011","broker":"BR105"},{"id":"1121F","num":1121,"rr":"S2AM","name":"KING PATRICIA","shortName":"PATRICIA KING","date":"20240424","ccy":"USD","suffix":"F","loan":142000.0,"tdBal":284000.0,"sdBal":282500.0,"mv":313000.0,"equity":30500.0,"tdMarg":56800.0,"tdSec":51120.0,"client":"CL011","broker":"BR105"},{"id":"1120E","num":1120,"rr":"S2BM","name":"HALL WILLIAM","shortName":"WILLIAM HALL","date":"20240424","ccy":"CAD","suffix":"E","loan":72000.0,"tdBal":144000.0,"sdBal":143100.0,"mv":158000.0,"equity":14900.0,"tdMarg":28800.0,"tdSec":25920.0,"client":"CL010","broker":"BR104"},{"id":"1120F","num":1120,"rr":"S2BM","name":"HALL WILLIAM","shortName":"WILLIAM HALL","date":"20240424","ccy":"USD","suffix":"F","loan":78000.0,"tdBal":156000.0,"sdBal":154900.0,"mv":172000.0,"equity":17100.0,"tdMarg":31200.0,"tdSec":28080.0,"client":"CL010","broker":"BR104"},{"id":"1119E","num":1119,"rr":"S2AM","name":"LEE JENNIFER","shortName":"JENNIFER LEE","date":"20240424","ccy":"CAD","suffix":"E","loan":225000.0,"tdBal":450000.0,"sdBal":447800.0,"mv":498000.0,"equity":50200.0,"tdMarg":90000.0,"tdSec":81000.0,"client":"CL009","broker":"BR104"},{"id":"1119F","num":1119,"rr":"S2AM","name":"LEE JENNIFER","shortName":"JENNIFER LEE","date":"20240424","ccy":"USD","suffix":"F","loan":235000.0,"tdBal":470000.0,"sdBal":467800.0,"mv":520000.0,"equity":52200.0,"tdMarg":94000.0,"tdSec":84600.0,"client":"CL009","broker":"BR104"},{"id":"1118E","num":1118,"rr":"S2BM","name":"GRAY MICHAEL","shortName":"MICHAEL GRAY","date":"20240424","ccy":"CAD","suffix":"E","loan":48000.0,"tdBal":96000.0,"sdBal":95400.0,"mv":105000.0,"equity":9600.0,"tdMarg":19200.0,"tdSec":17280.0,"client":"CL008","broker":"BR103"},{"id":"1118F","num":1118,"rr":"S2BM","name":"GRAY MICHAEL","shortName":"MICHAEL GRAY","date":"20240424","ccy":"USD","suffix":"F","loan":52000.0,"tdBal":104000.0,"sdBal":103300.0,"mv":115000.0,"equity":11700.0,"tdMarg":20800.0,"tdSec":18720.0,"client":"CL008","broker":"BR103"},{"id":"1117E","num":1117,"rr":"S2AM","name":"BLACK SARAH","shortName":"SARAH BLACK","date":"20240424","ccy":"CAD","suffix":"E","loan":175000.0,"tdBal":350000.0,"sdBal":348100.0,"mv":385000.0,"equity":36900.0,"tdMarg":70000.0,"tdSec":63000.0,"client":"CL007","broker":"BR103"},{"id":"1117F","num":1117,"rr":"S2AM","name":"BLACK SARAH","shortName":"SARAH BLACK","date":"20240424","ccy":"USD","suffix":"F","loan":165000.0,"tdBal":330000.0,"sdBal":328200.0,"mv":365000.0,"equity":36800.0,"tdMarg":66000.0,"tdSec":59400.0,"client":"CL007","broker":"BR103"},{"id":"1116E","num":1116,"rr":"S2BM","name":"GREEN DAVID","shortName":"DAVID GREEN","date":"20240424","ccy":"CAD","suffix":"E","loan":98000.0,"tdBal":196000.0,"sdBal":195200.0,"mv":215000.0,"equity":19800.0,"tdMarg":39200.0,"tdSec":35280.0,"client":"CL006","broker":"BR102"},{"id":"1116F","num":1116,"rr":"S2BM","name":"GREEN DAVID","shortName":"DAVID GREEN","date":"20240424","ccy":"USD","suffix":"F","loan":105000.0,"tdBal":210000.0,"sdBal":208700.0,"mv":230000.0,"equity":21300.0,"tdMarg":42000.0,"tdSec":37800.0,"client":"CL006","broker":"BR102"},{"id":"1115E","num":1115,"rr":"S2AM","name":"WHITE LISA","shortName":"LISA WHITE","date":"20240424","ccy":"CAD","suffix":"E","loan":155000.0,"tdBal":310000.0,"sdBal":308400.0,"mv":342000.0,"equity":33600.0,"tdMarg":62000.0,"tdSec":55800.0,"client":"CL005","broker":"BR102"},{"id":"1115F","num":1115,"rr":"S2AM","name":"WHITE LISA","shortName":"LISA WHITE","date":"20240424","ccy":"USD","suffix":"F","loan":145000.0,"tdBal":290000.0,"sdBal":288400.0,"mv":320000.0,"equity":31600.0,"tdMarg":58000.0,"tdSec":52200.0,"client":"CL005","broker":"BR102"},{"id":"1114E","num":1114,"rr":"S2BM","name":"BROWN ROBERT","shortName":"ROBERT BROWN","date":"20240424","ccy":"CAD","suffix":"E","loan":62000.0,"tdBal":124000.0,"sdBal":123100.0,"mv":138000.0,"equity":14900.0,"tdMarg":24800.0,"tdSec":22320.0,"client":"CL004","broker":"BR101"},{"id":"1114F","num":1114,"rr":"S2BM","name":"BROWN ROBERT","shortName":"ROBERT BROWN","date":"20240424","ccy":"USD","suffix":"F","loan":58000.0,"tdBal":116000.0,"sdBal":115200.0,"mv":128000.0,"equity":12800.0,"tdMarg":23200.0,"tdSec":20880.0,"client":"CL004","broker":"BR101"},{"id":"1113E","num":1113,"rr":"S2AM","name":"JONES MARY","shortName":"MARY JONES","date":"20240424","ccy":"CAD","suffix":"E","loan":210000.0,"tdBal":420000.0,"sdBal":418750.0,"mv":465000.0,"equity":46250.0,"tdMarg":84000.0,"tdSec":75600.0,"client":"CL003","broker":"BR101"},{"id":"1113F","num":1113,"rr":"S2AM","name":"JONES MARY","shortName":"MARY JONES","date":"20240424","ccy":"USD","suffix":"F","loan":198000.0,"tdBal":396000.0,"sdBal":394100.0,"mv":438000.0,"equity":43900.0,"tdMarg":79200.0,"tdSec":71280.0,"client":"CL003","broker":"BR101"},{"id":"1112E","num":1112,"rr":"S2AM","name":"DORSET JACK","shortName":"JACK DORSET","date":"20240424","ccy":"CAD","suffix":"E","loan":85000.0,"tdBal":170000.0,"sdBal":168200.0,"mv":195000.0,"equity":26800.0,"tdMarg":34000.0,"tdSec":30600.0,"client":"CL002","broker":"BR100"},{"id":"1112F","num":1112,"rr":"S2AM","name":"DORSET JACK","shortName":"JACK DORSET","date":"20240424","ccy":"USD","suffix":"F","loan":80000.0,"tdBal":160000.0,"sdBal":158800.0,"mv":178000.0,"equity":19200.0,"tdMarg":32000.0,"tdSec":28800.0,"client":"CL002","broker":"BR100"},{"id":"1111E","num":1111,"rr":"S2AM","name":"JOHN SMITH","shortName":"JOHN SMITH","date":"20240424","ccy":"CAD","suffix":"E","loan":125000.0,"tdBal":250000.0,"sdBal":248500.0,"mv":275000.0,"equity":26500.0,"tdMarg":50000.0,"tdSec":45000.0,"client":"CL001","broker":"BR100"},{"id":"1111F","num":1111,"rr":"S2AM","name":"JOHN SMITH","shortName":"JOHN SMITH","date":"20240424","ccy":"USD","suffix":"F","loan":118000.0,"tdBal":236000.0,"sdBal":234600.0,"mv":260000.0,"equity":25400.0,"tdMarg":47200.0,"tdSec":42480.0,"client":"CL001","broker":"BR100"}],"concentration":[{"acct":"1112","rr":"S2AM","name":"JACK DORSET","symbol":"TMO","desc":"THERMO FISHER SCIENTIFIC","qty":160,"close":469.71,"mv":75136.0,"lv":52595.2,"acctLoan":80000.0,"ratio":93.9,"daysLiq":5,"mvFlag":false,"ratFlag":true,"ccy":"USD","alert":"RATIO"},{"acct":"1114","rr":"S2BM","name":"ROBERT BROWN","symbol":"MSFT","desc":"MICROSOFT CORP","qty":500,"close":415.3,"mv":207650.0,"lv":145355.0,"acctLoan":58000.0,"ratio":358.0,"daysLiq":5,"mvFlag":true,"ratFlag":true,"ccy":"USD","alert":"BOTH"},{"acct":"1117","rr":"S2AM","name":"SARAH BLACK","symbol":"NVDA","desc":"NVIDIA CORP","qty":300,"close":875.5,"mv":262650.0,"lv":183855.0,"acctLoan":165000.0,"ratio":159.2,"daysLiq":5,"mvFlag":true,"ratFlag":true,"ccy":"USD","alert":"BOTH"},{"acct":"1118","rr":"S2BM","name":"MICHAEL GRAY","symbol":"META","desc":"META PLATFORMS INC","qty":200,"close":485.75,"mv":97150.0,"lv":68005.0,"acctLoan":52000.0,"ratio":186.8,"daysLiq":5,"mvFlag":false,"ratFlag":true,"ccy":"USD","alert":"RATIO"},{"acct":"1120","rr":"S2BM","name":"WILLIAM HALL","symbol":"JPM","desc":"JPMORGAN CHASE & CO","qty":600,"close":198.85,"mv":119310.0,"lv":83517.0,"acctLoan":78000.0,"ratio":153.0,"daysLiq":5,"mvFlag":true,"ratFlag":true,"ccy":"USD","alert":"BOTH"},{"acct":"1122","rr":"S2BM","name":"THOMAS YOUNG","symbol":"PG","desc":"PROCTER & GAMBLE CO","qty":275,"close":162.4,"mv":44660.0,"lv":31262.0,"acctLoan":88000.0,"ratio":50.7,"daysLiq":5,"mvFlag":false,"ratFlag":true,"ccy":"USD","alert":"RATIO"}]};
+const INITIAL = {"summary":{"totalAccounts":24,"cadAccounts":12,"usdAccounts":12,"totalAlerts":4,"bothAlerts":2,"mvAlerts":0,"ratioAlerts":2,"totalMV":6510000.0,"totalLoan":2946000.0,"totalEquity":650650.0,"reportDate":"2024-04-24"},"accounts":[{"id":"1122E","num":1122,"rr":"S2BM","name":"YOUNG THOMAS","shortName":"THOMAS YOUNG","date":"20240424","ccy":"CAD","suffix":"E","loan":92000.0,"tdBal":184000.0,"sdBal":182700.0,"mv":202000.0,"equity":19300.0,"tdMarg":36800.0,"tdSec":33120.0,"client":"CL012","broker":"BR105"},{"id":"1122F","num":1122,"rr":"S2BM","name":"YOUNG THOMAS","shortName":"THOMAS YOUNG","date":"20240424","ccy":"USD","suffix":"F","loan":88000.0,"tdBal":176000.0,"sdBal":175100.0,"mv":195000.0,"equity":19900.0,"tdMarg":35200.0,"tdSec":31680.0,"client":"CL012","broker":"BR105"},{"id":"1121E","num":1121,"rr":"S2AM","name":"KING PATRICIA","shortName":"PATRICIA KING","date":"20240424","ccy":"CAD","suffix":"E","loan":135000.0,"tdBal":270000.0,"sdBal":268500.0,"mv":298000.0,"equity":29500.0,"tdMarg":54000.0,"tdSec":48600.0,"client":"CL011","broker":"BR105"},{"id":"1121F","num":1121,"rr":"S2AM","name":"KING PATRICIA","shortName":"PATRICIA KING","date":"20240424","ccy":"USD","suffix":"F","loan":142000.0,"tdBal":284000.0,"sdBal":282500.0,"mv":313000.0,"equity":30500.0,"tdMarg":56800.0,"tdSec":51120.0,"client":"CL011","broker":"BR105"},{"id":"1120E","num":1120,"rr":"S2BM","name":"HALL WILLIAM","shortName":"WILLIAM HALL","date":"20240424","ccy":"CAD","suffix":"E","loan":72000.0,"tdBal":144000.0,"sdBal":143100.0,"mv":158000.0,"equity":14900.0,"tdMarg":28800.0,"tdSec":25920.0,"client":"CL010","broker":"BR104"},{"id":"1120F","num":1120,"rr":"S2BM","name":"HALL WILLIAM","shortName":"WILLIAM HALL","date":"20240424","ccy":"USD","suffix":"F","loan":78000.0,"tdBal":156000.0,"sdBal":154900.0,"mv":172000.0,"equity":17100.0,"tdMarg":31200.0,"tdSec":28080.0,"client":"CL010","broker":"BR104"},{"id":"1119E","num":1119,"rr":"S2AM","name":"LEE JENNIFER","shortName":"JENNIFER LEE","date":"20240424","ccy":"CAD","suffix":"E","loan":225000.0,"tdBal":450000.0,"sdBal":447800.0,"mv":498000.0,"equity":50200.0,"tdMarg":90000.0,"tdSec":81000.0,"client":"CL009","broker":"BR104"},{"id":"1119F","num":1119,"rr":"S2AM","name":"LEE JENNIFER","shortName":"JENNIFER LEE","date":"20240424","ccy":"USD","suffix":"F","loan":235000.0,"tdBal":470000.0,"sdBal":467800.0,"mv":520000.0,"equity":52200.0,"tdMarg":94000.0,"tdSec":84600.0,"client":"CL009","broker":"BR104"},{"id":"1118E","num":1118,"rr":"S2BM","name":"GRAY MICHAEL","shortName":"MICHAEL GRAY","date":"20240424","ccy":"CAD","suffix":"E","loan":48000.0,"tdBal":96000.0,"sdBal":95400.0,"mv":105000.0,"equity":9600.0,"tdMarg":19200.0,"tdSec":17280.0,"client":"CL008","broker":"BR103"},{"id":"1118F","num":1118,"rr":"S2BM","name":"GRAY MICHAEL","shortName":"MICHAEL GRAY","date":"20240424","ccy":"USD","suffix":"F","loan":52000.0,"tdBal":104000.0,"sdBal":103300.0,"mv":115000.0,"equity":11700.0,"tdMarg":20800.0,"tdSec":18720.0,"client":"CL008","broker":"BR103"},{"id":"1117E","num":1117,"rr":"S2AM","name":"BLACK SARAH","shortName":"SARAH BLACK","date":"20240424","ccy":"CAD","suffix":"E","loan":175000.0,"tdBal":350000.0,"sdBal":348100.0,"mv":385000.0,"equity":36900.0,"tdMarg":70000.0,"tdSec":63000.0,"client":"CL007","broker":"BR103"},{"id":"1117F","num":1117,"rr":"S2AM","name":"BLACK SARAH","shortName":"SARAH BLACK","date":"20240424","ccy":"USD","suffix":"F","loan":165000.0,"tdBal":330000.0,"sdBal":328200.0,"mv":365000.0,"equity":36800.0,"tdMarg":66000.0,"tdSec":59400.0,"client":"CL007","broker":"BR103"},{"id":"1116E","num":1116,"rr":"S2BM","name":"GREEN DAVID","shortName":"DAVID GREEN","date":"20240424","ccy":"CAD","suffix":"E","loan":98000.0,"tdBal":196000.0,"sdBal":195200.0,"mv":215000.0,"equity":19800.0,"tdMarg":39200.0,"tdSec":35280.0,"client":"CL006","broker":"BR102"},{"id":"1116F","num":1116,"rr":"S2BM","name":"GREEN DAVID","shortName":"DAVID GREEN","date":"20240424","ccy":"USD","suffix":"F","loan":105000.0,"tdBal":210000.0,"sdBal":208700.0,"mv":230000.0,"equity":21300.0,"tdMarg":42000.0,"tdSec":37800.0,"client":"CL006","broker":"BR102"},{"id":"1115E","num":1115,"rr":"S2AM","name":"WHITE LISA","shortName":"LISA WHITE","date":"20240424","ccy":"CAD","suffix":"E","loan":155000.0,"tdBal":310000.0,"sdBal":308400.0,"mv":342000.0,"equity":33600.0,"tdMarg":62000.0,"tdSec":55800.0,"client":"CL005","broker":"BR102"},{"id":"1115F","num":1115,"rr":"S2AM","name":"WHITE LISA","shortName":"LISA WHITE","date":"20240424","ccy":"USD","suffix":"F","loan":145000.0,"tdBal":290000.0,"sdBal":288400.0,"mv":320000.0,"equity":31600.0,"tdMarg":58000.0,"tdSec":52200.0,"client":"CL005","broker":"BR102"},{"id":"1114E","num":1114,"rr":"S2BM","name":"BROWN ROBERT","shortName":"ROBERT BROWN","date":"20240424","ccy":"CAD","suffix":"E","loan":62000.0,"tdBal":124000.0,"sdBal":123100.0,"mv":138000.0,"equity":14900.0,"tdMarg":24800.0,"tdSec":22320.0,"client":"CL004","broker":"BR101"},{"id":"1114F","num":1114,"rr":"S2BM","name":"BROWN ROBERT","shortName":"ROBERT BROWN","date":"20240424","ccy":"USD","suffix":"F","loan":58000.0,"tdBal":116000.0,"sdBal":115200.0,"mv":128000.0,"equity":12800.0,"tdMarg":23200.0,"tdSec":20880.0,"client":"CL004","broker":"BR101"},{"id":"1113E","num":1113,"rr":"S2AM","name":"JONES MARY","shortName":"MARY JONES","date":"20240424","ccy":"CAD","suffix":"E","loan":210000.0,"tdBal":420000.0,"sdBal":418750.0,"mv":465000.0,"equity":46250.0,"tdMarg":84000.0,"tdSec":75600.0,"client":"CL003","broker":"BR101"},{"id":"1113F","num":1113,"rr":"S2AM","name":"JONES MARY","shortName":"MARY JONES","date":"20240424","ccy":"USD","suffix":"F","loan":198000.0,"tdBal":396000.0,"sdBal":394100.0,"mv":438000.0,"equity":43900.0,"tdMarg":79200.0,"tdSec":71280.0,"client":"CL003","broker":"BR101"},{"id":"1112E","num":1112,"rr":"S2AM","name":"DORSET JACK","shortName":"JACK DORSET","date":"20240424","ccy":"CAD","suffix":"E","loan":85000.0,"tdBal":170000.0,"sdBal":168200.0,"mv":195000.0,"equity":26800.0,"tdMarg":34000.0,"tdSec":30600.0,"client":"CL002","broker":"BR100"},{"id":"1112F","num":1112,"rr":"S2AM","name":"DORSET JACK","shortName":"JACK DORSET","date":"20240424","ccy":"USD","suffix":"F","loan":80000.0,"tdBal":160000.0,"sdBal":158800.0,"mv":178000.0,"equity":19200.0,"tdMarg":32000.0,"tdSec":28800.0,"client":"CL002","broker":"BR100"},{"id":"1111E","num":1111,"rr":"S2AM","name":"JOHN SMITH","shortName":"JOHN SMITH","date":"20240424","ccy":"CAD","suffix":"E","loan":125000.0,"tdBal":250000.0,"sdBal":248500.0,"mv":275000.0,"equity":26500.0,"tdMarg":50000.0,"tdSec":45000.0,"client":"CL001","broker":"BR100"},{"id":"1111F","num":1111,"rr":"S2AM","name":"JOHN SMITH","shortName":"JOHN SMITH","date":"20240424","ccy":"USD","suffix":"F","loan":118000.0,"tdBal":236000.0,"sdBal":234600.0,"mv":260000.0,"equity":25400.0,"tdMarg":47200.0,"tdSec":42480.0,"client":"CL001","broker":"BR100"}],"concentration":[{"acct":"1112","rr":"S2AM","name":"JACK DORSET","symbol":"TMO","desc":"THERMO FISHER SCIENTIFIC","qty":160,"close":469.71,"mv":75136.0,"lv":52595.2,"cadLoan":85000,"usdLoan":80000,"acctLoan":165000,"acctLoanNote":"E+F combined","ratio":45.5,"daysLiq":5,"mvFlag":false,"ratFlag":true,"ccy":"USD","acctType":"MRL","alert":"RATIO"},{"acct":"1114","rr":"S2BM","name":"ROBERT BROWN","symbol":"MSFT","desc":"MICROSOFT CORP","qty":500,"close":415.3,"mv":207650.0,"lv":145355.0,"cadLoan":62000,"usdLoan":58000,"acctLoan":120000,"acctLoanNote":"E+F combined","ratio":173.0,"daysLiq":5,"mvFlag":true,"ratFlag":true,"ccy":"USD","acctType":"MRL","alert":"BOTH"},{"acct":"1118","rr":"S2BM","name":"MICHAEL GRAY","symbol":"META","desc":"META PLATFORMS INC","qty":200,"close":485.75,"mv":97150.0,"lv":68005.0,"cadLoan":48000,"usdLoan":52000,"acctLoan":100000,"acctLoanNote":"E+F combined","ratio":97.2,"daysLiq":5,"mvFlag":false,"ratFlag":true,"ccy":"USD","acctType":"MRL","alert":"RATIO"},{"acct":"1120","rr":"S2BM","name":"WILLIAM HALL","symbol":"JPM","desc":"JPMORGAN CHASE & CO","qty":600,"close":198.85,"mv":119310.0,"lv":83517.0,"cadLoan":72000,"usdLoan":78000,"acctLoan":150000,"acctLoanNote":"E+F combined","ratio":79.5,"daysLiq":5,"mvFlag":true,"ratFlag":true,"ccy":"USD","acctType":"MRL","alert":"BOTH"}]};
 
 let DATA = JSON.parse(JSON.stringify(INITIAL));
 let acctFilter = 'ALL', concFilter = 'ALL', sortCol = null, sortDir = 1;
@@ -740,23 +740,36 @@ function renderKPIs() {
 }
 
 function renderOverview() {
-  const rows = DATA.concentration;
+  const fx = getFxRate();
+  const mvT = parseFloat(document.getElementById('mv-thresh').value) || 100000;
+  const rtT = parseFloat(document.getElementById('ratio-thresh').value) / 100 || 0.30;
+
+  const rows = DATA.concentration.map(r => {
+    const mvCad   = toCad(r.mv, r.ccy);
+    const loanCad = cadLoanTotal(r);
+    const ratioCad = loanCad > 0 ? (mvCad / loanCad) * 100 : 0;
+    const mf = mvCad >= mvT, rf = ratioCad / 100 >= rtT;
+    const alert = (mf && rf) ? 'BOTH' : mf ? 'MV' : rf ? 'RATIO' : null;
+    return { ...r, mvCad, loanCad, ratioCad: parseFloat(ratioCad.toFixed(1)), alert };
+  }).filter(r => r.alert);
+
   document.getElementById('overview-count').textContent = rows.length + ' positions flagged';
   const tbody = document.getElementById('overview-tbody');
   tbody.innerHTML = rows.map(r => {
-    const pct = Math.min(r.ratio, 400);
+    const pct = Math.min(r.ratioCad, 400);
     const barColor = r.alert==='BOTH' ? '#C0392B' : r.alert==='RATIO' ? '#D68910' : '#1A5276';
+    const isUSD = r.ccy && r.ccy.toUpperCase() === 'USD';
     return `<tr>
       <td><span class="alert-dot dot-${r.alert.toLowerCase()}"></span><span class="tag tag-${r.alert.toLowerCase()}">${r.alert}</span></td>
       <td><span class="acct-id">${r.acct}</span></td>
       <td>${r.name}</td>
       <td><span class="sym">${r.symbol}</span></td>
       <td style="color:var(--text-light);font-size:12px">${r.desc}</td>
-      <td class="num">${fmt(r.mv)}</td>
+      <td class="num td-cad-equiv">${fmt(r.mvCad)}${isUSD ? `<span style="font-size:9px;color:var(--text-xlight);margin-left:3px;">×${fx.toFixed(4)}</span>` : ''}</td>
       <td class="num">
         <div class="ratio-cell">
           <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:${Math.min(pct/4,100)}%;background:${barColor}"></div></div>
-          <span class="ratio-val" style="color:${barColor}">${fmtPct(r.ratio)}</span>
+          <span class="ratio-val" style="color:${barColor}">${fmtPct(r.ratioCad)}</span>
         </div>
       </td>
       <td class="num" style="color:var(--amber);font-weight:600">${r.daysLiq}d</td>
@@ -774,7 +787,7 @@ function cadEquiv(r) {
   return r.tdMarg * getFxRate();
 }
 
-function onFxChange() { renderAccounts(); }
+function onFxChange() { renderAccounts(); renderOverview(); renderConcentration(); }
 
 function switchSubtab(name) {
   document.getElementById('sub-acct').style.display   = name === 'acct'   ? '' : 'none';
@@ -827,20 +840,77 @@ function setAcctFilter(v,el){ acctFilter=v; document.querySelectorAll('#sub-acct
 function sortAcct(col){ if(sortCol===col)sortDir*=-1; else{sortCol=col;sortDir=1;} document.querySelectorAll('#sub-acct th.sortable').forEach(th=>th.classList.remove('sort-asc','sort-desc')); event.target.classList.add(sortDir===1?'sort-asc':'sort-desc'); renderAccounts(); }
 
 function applyThresholds() {
-  const mvT=parseFloat(document.getElementById('mv-thresh').value)||100000;
-  const rtT=parseFloat(document.getElementById('ratio-thresh').value)/100||0.30;
-  DATA.concentration=INITIAL.concentration.map(r=>{const mf=r.mv>=mvT,rf=r.ratio/100>=rtT;return{...r,mvFlag:mf,ratFlag:rf,alert:(mf&&rf)?'BOTH':mf?'MV':rf?'RATIO':null};}).filter(r=>r.alert);
-  const s=DATA.summary; s.totalAlerts=DATA.concentration.length; s.bothAlerts=DATA.concentration.filter(r=>r.alert==='BOTH').length; s.mvAlerts=DATA.concentration.filter(r=>r.alert==='MV').length; s.ratioAlerts=DATA.concentration.filter(r=>r.alert==='RATIO').length;
-  renderKPIs(); renderOverview(); renderConcentration();
+  // Restore full INITIAL concentration (renderConcentration applies thresholds + FX live)
+  DATA.concentration = INITIAL.concentration.map(r => ({ ...r }));
+  renderOverview();
+  renderConcentration();
+}
+
+function toCad(value, ccy) {
+  // Convert a value to CAD. If already CAD, return as-is. If USD, multiply by FX rate.
+  if (!ccy || ccy.toUpperCase() === 'CAD') return value;
+  return value * getFxRate();
+}
+
+function cadLoanTotal(r) {
+  // CAD-equivalent combined loan: cadLoan as-is, usdLoan * FX rate
+  const fx = getFxRate();
+  const cad = (r.cadLoan || 0);
+  const usd = (r.usdLoan || 0) * fx;
+  // Fallback: if no split stored, treat acctLoan as USD (legacy uploaded data)
+  if (!r.cadLoan && !r.usdLoan) return toCad(r.acctLoan, r.ccy);
+  return cad + usd;
+}
+
+function concRatioCad(r) {
+  const mvCad = toCad(r.mv, r.ccy);
+  const loanCad = cadLoanTotal(r);
+  return loanCad > 0 ? (mvCad / loanCad) * 100 : 0;
 }
 
 function renderConcentration() {
-  let rows=DATA.concentration;
-  if(concFilter!=='ALL') rows=rows.filter(r=>r.alert===concFilter);
-  document.getElementById('conc-count').textContent=rows.length+' alerts';
-  document.getElementById('conc-tbody').innerHTML=rows.map(r=>{
-    const pct=Math.min(r.ratio,400); const barColor=r.alert==='BOTH'?'#C0392B':r.alert==='RATIO'?'#D68910':'#1A5276';
-    const dot=`dot-${r.alert.toLowerCase()}`;
+  const fx = getFxRate();
+  const mvT  = parseFloat(document.getElementById('mv-thresh').value)  || 100000;
+  const rtT  = parseFloat(document.getElementById('ratio-thresh').value) / 100 || 0.30;
+
+  let rows = DATA.concentration.map(r => {
+    // Recompute CAD-equivalent values live using current FX rate
+    const mvCad    = toCad(r.mv, r.ccy);
+    const lvCad    = toCad(r.lv, r.ccy);
+    const loanCad  = cadLoanTotal(r);
+    const ratioCad = loanCad > 0 ? (mvCad / loanCad) * 100 : 0;
+    const mvF  = mvCad  >= mvT;
+    const rtF  = ratioCad / 100 >= rtT;
+    const alert = (mvF && rtF) ? 'BOTH' : mvF ? 'MV' : rtF ? 'RATIO' : null;
+    return { ...r, mvCad, lvCad, loanCad, ratioCad: parseFloat(ratioCad.toFixed(1)), mvFlag: mvF, ratFlag: rtF, alert };
+  }).filter(r => r.alert);
+
+  if (concFilter !== 'ALL') rows = rows.filter(r => r.alert === concFilter);
+  document.getElementById('conc-count').textContent = rows.length + ' alerts';
+
+  // Also update summary counts live
+  const allRows = DATA.concentration.map(r => {
+    const mvCad   = toCad(r.mv, r.ccy);
+    const loanCad = cadLoanTotal(r);
+    const ratioCad = loanCad > 0 ? (mvCad / loanCad) * 100 : 0;
+    const mf = mvCad >= mvT, rf = ratioCad / 100 >= rtT;
+    return (mf || rf) ? ((mf && rf) ? 'BOTH' : mf ? 'MV' : 'RATIO') : null;
+  }).filter(Boolean);
+  const s = DATA.summary;
+  s.totalAlerts  = allRows.length;
+  s.bothAlerts   = allRows.filter(a => a === 'BOTH').length;
+  s.mvAlerts     = allRows.filter(a => a === 'MV').length;
+  s.ratioAlerts  = allRows.filter(a => a === 'RATIO').length;
+  renderKPIs();
+
+  document.getElementById('conc-tbody').innerHTML = rows.map(r => {
+    const pct = Math.min(r.ratioCad, 400);
+    const barColor = r.alert === 'BOTH' ? '#C0392B' : r.alert === 'RATIO' ? '#D68910' : '#1A5276';
+    const dot = `dot-${r.alert.toLowerCase()}`;
+    const isUSD = r.ccy && r.ccy.toUpperCase() === 'USD';
+    const fxTag = isUSD
+      ? `<span style="font-size:9px;color:var(--text-xlight);margin-left:3px;" title="USD × ${fx.toFixed(4)}">×${fx.toFixed(4)}</span>`
+      : '';
     return `<tr>
       <td><span class="alert-dot ${dot}"></span><span class="tag tag-${r.alert.toLowerCase()}">${r.alert}</span></td>
       <td><span class="acct-id">${r.acct}</span></td>
@@ -850,16 +920,16 @@ function renderConcentration() {
       <td style="color:var(--text-light);font-size:12px">${r.desc}</td>
       <td style="color:var(--text-light)">${r.ccy}</td>
       <td class="num">${fmtNum(r.qty)}</td>
-      <td class="num">${fmtPrice(r.close)}</td>
-      <td class="num">${fmt(r.mv)}</td>
-      <td class="num">${fmt(r.lv)}</td>
-      <td class="num">${fmt(r.acctLoan)}</td>
-      <td class="num"><div class="ratio-cell"><div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:${Math.min(pct/4,100)}%;background:${barColor}"></div></div><span class="ratio-val" style="color:${barColor}">${fmtPct(r.ratio)}</span></div></td>
-      <td class="num"><span class="${r.mvFlag?'flag-yes':'flag-no'}">${r.mvFlag?'YES':'no'}</span></td>
-      <td class="num"><span class="${r.ratFlag?'flag-yes':'flag-no'}">${r.ratFlag?'YES':'no'}</span></td>
+      <td class="num">${isUSD ? fmtPrice(r.close) : fmtPrice(r.close)}</td>
+      <td class="num td-cad-equiv" title="CAD equivalent${isUSD ? ': USD ' + fmt(r.mv) + ' × ' + fx.toFixed(4) : ''}">${fmt(r.mvCad)}${fxTag}</td>
+      <td class="num td-cad-equiv" title="CAD equivalent position loan value">${fmt(r.lvCad)}${fxTag}</td>
+      <td class="num td-cad-equiv" title="CAD equivalent: E loan $${(r.cadLoan||0).toLocaleString()} + F loan $${(r.usdLoan||0).toLocaleString()} USD × ${fx.toFixed(4)}">${fmt(r.loanCad)}<span style="font-size:9px;color:var(--text-xlight);margin-left:3px;">E+F</span></td>
+      <td class="num"><div class="ratio-cell"><div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:${Math.min(pct/4,100)}%;background:${barColor}"></div></div><span class="ratio-val" style="color:${barColor}">${fmtPct(r.ratioCad)}</span></div></td>
+      <td class="num"><span class="${r.mvFlag ? 'flag-yes' : 'flag-no'}">${r.mvFlag ? 'YES' : 'no'}</span></td>
+      <td class="num"><span class="${r.ratFlag ? 'flag-yes' : 'flag-no'}">${r.ratFlag ? 'YES' : 'no'}</span></td>
       <td class="num" style="color:var(--amber);font-weight:600">${r.daysLiq}d</td>
     </tr>`;
-  }).join('')||'<tr><td colspan="16" class="empty">No positions match current thresholds</td></tr>';
+  }).join('') || '<tr><td colspan="16" class="empty">No positions match current thresholds</td></tr>';
 }
 function setConcFilter(v,el){ concFilter=v; document.querySelectorAll('#tab-concentration .filter-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderConcentration(); }
 
@@ -892,15 +962,52 @@ function processAccountData(rows) {
 function processPOSData(rows) {
   const mvT=parseFloat(document.getElementById('mv-thresh').value)||100000;
   const rtT=parseFloat(document.getElementById('ratio-thresh').value)/100||0.30;
-  const loanMap={};
-  DATA.accounts.forEach(a=>{loanMap[`${a.num}|${a.ccy}`]=a.loan;});
-  DATA.concentration=rows.map(r=>{
-    const mv=parseFloat(r['Position Market Value'])||0,pC=(r['Price Currency']||'USD').toUpperCase(),num=String(parseInt(r['Account Number'])||'');
-    const loan=loanMap[`${num}|${pC}`]||loanMap[`${num}|CAD`]||0,ratio=loan>0?(mv/loan)*100:0,mvF=mv>=mvT,rtF=ratio/100>=rtT;
-    if(!mvF&&!rtF) return null;
-    return{acct:num,rr:String(r['Account RR Code']||''),name:String(r['Account Short Name']||''),symbol:String(r['Security Symbol']||''),desc:String(r['Security Description']||''),qty:parseInt(r['Trade Quantity'])||0,close:parseFloat(r['Position Close Price'])||0,mv,lv:parseFloat(r['Position Loan Value'])||0,acctLoan:loan,ratio:parseFloat(ratio.toFixed(1)),daysLiq:5,mvFlag:mvF,ratFlag:rtF,ccy:pC,alert:(mvF&&rtF)?'BOTH':mvF?'MV':'RATIO'};
-  }).filter(Boolean);
-  const s=DATA.summary; s.totalAlerts=DATA.concentration.length; s.bothAlerts=DATA.concentration.filter(r=>r.alert==='BOTH').length; s.mvAlerts=DATA.concentration.filter(r=>r.alert==='MV').length; s.ratioAlerts=DATA.concentration.filter(r=>r.alert==='RATIO').length;
+
+  // Combined loan: group E+F accounts by base account number (strip last char of accountID)
+  const combinedLoan={};
+  DATA.accounts.forEach(a=>{
+    const base=String(a.num); // numeric account number is the common key
+    combinedLoan[base]=(combinedLoan[base]||0)+a.loan;
+  });
+
+  // Filter to MRL account type only, then compute concentration using combined E+F loan
+  // Build split CAD/USD loan maps for accurate FX conversion
+  const cadLoanMap={}, usdLoanMap={};
+  DATA.accounts.forEach(a=>{
+    const base=String(a.num);
+    if(a.ccy==='CAD') cadLoanMap[base]=(cadLoanMap[base]||0)+a.loan;
+    else               usdLoanMap[base]=(usdLoanMap[base]||0)+a.loan;
+  });
+
+  DATA.concentration=rows
+    .filter(r=>(r['Account Type']||r['AccountType']||'').toUpperCase()==='MRL')
+    .map(r=>{
+      const mv=parseFloat(r['Position Market Value'])||0;
+      const pC=(r['Price Currency']||'USD').toUpperCase();
+      const num=String(parseInt(r['Account Number'])||'');
+      const cLoan=cadLoanMap[num]||0, uLoan=usdLoanMap[num]||0;
+      const totalLoan=cLoan+uLoan; // raw sum (FX applied at render time)
+      // Initial ratio using raw values for storage; renderConcentration recalculates with live FX
+      const ratio=totalLoan>0?(mv/totalLoan)*100:0;
+      const mvF=mv>=mvT, rtF=ratio/100>=rtT;
+      if(!mvF&&!rtF) return null;
+      return{
+        acct:num, rr:String(r['Account RR Code']||''), name:String(r['Account Short Name']||''),
+        symbol:String(r['Security Symbol']||''), desc:String(r['Security Description']||''),
+        qty:parseInt(r['Trade Quantity'])||0, close:parseFloat(r['Position Close Price'])||0,
+        mv, lv:parseFloat(r['Position Loan Value'])||0,
+        cadLoan:cLoan, usdLoan:uLoan, acctLoan:totalLoan,
+        acctLoanNote:'E+F combined', ratio:parseFloat(ratio.toFixed(1)),
+        daysLiq:5, mvFlag:mvF, ratFlag:rtF, ccy:pC, acctType:'MRL',
+        alert:(mvF&&rtF)?'BOTH':mvF?'MV':'RATIO'
+      };
+    }).filter(Boolean);
+
+  const s=DATA.summary;
+  s.totalAlerts=DATA.concentration.length;
+  s.bothAlerts=DATA.concentration.filter(r=>r.alert==='BOTH').length;
+  s.mvAlerts=DATA.concentration.filter(r=>r.alert==='MV').length;
+  s.ratioAlerts=DATA.concentration.filter(r=>r.alert==='RATIO').length;
   renderAll();
 }
 
@@ -915,7 +1022,7 @@ function exportCSV() {
   const tab=document.querySelector('.content.active').id.replace('tab-','');
   let headers,rows;
   if(tab==='overview'){ const fx=getFxRate(); headers=['Account ID','RR Code','Short Name','Currency','Loan Value','TD Balance','SD Balance','Market Value','Equity','TD Req Margin','CAD Equiv TD Margin (FX:'+fx.toFixed(4)+')','TD Req Secure','Client','Broker']; rows=DATA.accounts.map(r=>[r.id,r.rr,r.shortName,r.ccy,r.loan,r.tdBal,r.sdBal,r.mv,r.equity,r.tdMarg,cadEquiv(r).toFixed(2),r.tdSec,r.client,r.broker]); }
-  else { headers=['Account','RR','Name','Symbol','Description','Currency','Qty','Close','MV','LV','Acct Loan','Conc%','Days','MV Flag','Ratio Flag','Alert']; rows=DATA.concentration.map(r=>[r.acct,r.rr,r.name,r.symbol,r.desc,r.ccy,r.qty,r.close,r.mv,r.lv,r.acctLoan,r.ratio,r.daysLiq,r.mvFlag?'YES':'no',r.ratFlag?'YES':'no',r.alert]); }
+  else { const fx=getFxRate(); headers=['Account','RR','Name','Symbol','Description','Orig Ccy','Qty','Close Price','MV (CAD)','LV (CAD)','Acct Loan CAD (E+F, FX:'+fx.toFixed(4)+')','Conc% (CAD)','Days Liq','MV Flag','Ratio Flag','Alert']; rows=DATA.concentration.map(r=>{const mvC=toCad(r.mv,r.ccy),lvC=toCad(r.lv,r.ccy),lnC=cadLoanTotal(r),rt=lnC>0?(mvC/lnC*100):0;return[r.acct,r.rr,r.name,r.symbol,r.desc,r.ccy,r.qty,r.close,mvC.toFixed(2),lvC.toFixed(2),lnC.toFixed(2),rt.toFixed(1),r.daysLiq,mvC>=(parseFloat(document.getElementById('mv-thresh').value)||100000)?'YES':'no',rt/100>=(parseFloat(document.getElementById('ratio-thresh').value)/100||0.30)?'YES':'no',r.alert];});}
   const csv=[headers,...rows].map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download=`sunlife_margin_${tab}_${DATA.summary.reportDate}.csv`; a.click();
 }
