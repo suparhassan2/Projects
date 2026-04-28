@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Margin Account Monitor — Sun Life Financial</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Sun Life brand palette */
+  --sl-teal:        #0E3846;
+  --sl-teal-mid:    #1A4F62;
+  --sl-teal-light:  #25687F;
+  --sl-teal-pale:   #E8F1F4;
+  --sl-teal-xpale:  #F2F8FA;
+  --sl-gold:        #ECAB23;
+  --sl-gold-light:  #F5C75A;
+  --sl-gold-pale:   #FEF6E4;
+  --sl-gold-dim:    rgba(236,171,35,0.15);
+
+  /* Utility */
+  --white:          #FFFFFF;
+  --off-white:      #F8F7F5;
+  --border:         #E2E8EC;
+  --border-mid:     #C8D4DA;
+  --text-dark:      #0E2830;
+  --text-mid:       #3A5566;
+  --text-light:     #6B8899;
+  --text-xlight:    #99B0BB;
+
+  /* Status */
+  --red:            #C0392B;
+  --red-pale:       #FDECEA;
+  --amber:          #D68910;
+  --amber-pale:     #FEF9E7;
+  --green:          #1A7A4A;
+  --green-pale:     #E9F7EF;
+  --blue:           #1A5276;
+  --blue-pale:      #EBF5FB;
+
+  /* Type */
+  --font-display:   'Playfair Display', Georgia, serif;
+  --font-body:      'Source Sans 3', system-ui, sans-serif;
+
+  /* Shadows */
+  --shadow-sm:      0 1px 3px rgba(14,56,70,0.08);
+  --shadow-md:      0 4px 12px rgba(14,56,70,0.10);
+  --shadow-lg:      0 8px 24px rgba(14,56,70,0.12);
+}
+
+html { background: var(--off-white); color: var(--text-dark); font-family: var(--font-body); font-size: 14px; line-height: 1.5; }
+body { min-height: 100vh; }
+
+/* ── Shell layout ── */
+.shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  background: var(--sl-teal);
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  box-shadow: 2px 0 16px rgba(14,56,70,0.18);
+  z-index: 10;
+}
+
+.sidebar-brand {
+  padding: 28px 24px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.brand-lockup { display: flex; align-items: center; gap: 12px; }
+.brand-sun {
+  width: 36px; height: 36px; flex-shrink: 0; position: relative;
+}
+.brand-sun svg { width: 36px; height: 36px; }
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 13px; font-weight: 600;
+  color: var(--white); line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+.brand-name span { display: block; font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.55); font-family: var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 2px; }
+.brand-divider { width: 32px; height: 2px; background: var(--sl-gold); margin-top: 16px; border-radius: 1px; }
+
+.sidebar-nav { flex: 1; padding: 20px 0 16px; overflow-y: auto; }
+.nav-group-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.32); padding: 16px 24px 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 10px 24px; cursor: pointer; font-size: 13px; font-weight: 400;
+  color: rgba(255,255,255,0.65); transition: all 0.18s;
+  border-left: 3px solid transparent; user-select: none;
+  position: relative;
+}
+.nav-item:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.05); }
+.nav-item.active { color: var(--white); border-left-color: var(--sl-gold); background: rgba(255,255,255,0.08); font-weight: 500; }
+.nav-icon { width: 16px; height: 16px; opacity: 0.7; flex-shrink: 0; }
+.nav-item.active .nav-icon { opacity: 1; }
+.nav-badge {
+  margin-left: auto; background: var(--red); color: white;
+  font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px;
+  font-family: var(--font-body);
+}
+
+.sidebar-footer {
+  padding: 16px 24px 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.sidebar-footer-label { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 4px; }
+.sidebar-footer-val { font-size: 12px; color: rgba(255,255,255,0.65); }
+.live-indicator { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sl-gold); flex-shrink: 0; }
+@keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
+.live-dot { animation: livePulse 2.5s ease-in-out infinite; }
+.live-text { font-size: 10px; color: rgba(255,255,255,0.45); }
+
+/* ── Main ── */
+.main { display: flex; flex-direction: column; background: var(--off-white); overflow-y: auto; }
+
+/* ── Page header ── */
+.page-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 36px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+.page-title-block {}
+.page-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sl-gold); margin-bottom: 4px; }
+.page-title { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--sl-teal); letter-spacing: -0.01em; }
+.page-sub { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 18px; border-radius: 4px; font-family: var(--font-body);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  border: 1.5px solid var(--border-mid); background: var(--white);
+  color: var(--text-mid); transition: all 0.15s;
+}
+.btn:hover { border-color: var(--sl-teal-light); color: var(--sl-teal); background: var(--sl-teal-xpale); }
+.btn-primary { background: var(--sl-gold); border-color: var(--sl-gold); color: var(--sl-teal); font-weight: 600; }
+.btn-primary:hover { background: var(--sl-gold-light); border-color: var(--sl-gold-light); color: var(--sl-teal); }
+
+.upload-zone {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 4px; cursor: pointer;
+  border: 1.5px dashed var(--border-mid); color: var(--text-light);
+  font-size: 13px; font-weight: 500; transition: all 0.15s;
+  position: relative;
+}
+.upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.upload-zone:hover { border-color: var(--sl-teal-light); color: var(--sl-teal); background: var(--sl-teal-xpale); }
+
+/* ── Content ── */
+.content { padding: 28px 36px; display: none; flex: 1; }
+.content.active { display: block; }
+
+/* ── KPI strip ── */
+.kpi-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 28px; }
+.kpi {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 6px; padding: 20px 22px;
+  box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+}
+.kpi::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+  background: var(--kpi-accent, var(--sl-teal));
+}
+@keyframes kpiIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+.kpi { animation: kpiIn 0.4s ease both; }
+.kpi:nth-child(1){animation-delay:.04s}.kpi:nth-child(2){animation-delay:.08s}
+.kpi:nth-child(3){animation-delay:.12s}.kpi:nth-child(4){animation-delay:.16s}
+.kpi:nth-child(5){animation-delay:.20s}
+.kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); margin-bottom: 10px; }
+.kpi-value { font-family: var(--font-display); font-size: 28px; font-weight: 600; color: var(--sl-teal); letter-spacing: -0.02em; line-height: 1; }
+.kpi-sub { font-size: 11px; color: var(--text-xlight); margin-top: 5px; }
+.kpi.gold-accent { --kpi-accent: var(--sl-gold); }
+.kpi.red-accent { --kpi-accent: var(--red); }
+.kpi.green-accent { --kpi-accent: var(--green); }
+
+/* ── Section header ── */
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.section-title { font-family: var(--font-display); font-size: 17px; font-weight: 500; color: var(--sl-teal); display: flex; align-items: center; gap: 10px; }
+.section-count { font-size: 11px; font-family: var(--font-body); font-weight: 400; background: var(--sl-teal-pale); color: var(--sl-teal-light); padding: 2px 10px; border-radius: 10px; }
+
+/* ── Filter bar ── */
+.filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.filter-input {
+  flex: 1; background: var(--white); border: 1.5px solid var(--border); border-radius: 4px;
+  padding: 8px 14px; color: var(--text-dark); font-family: var(--font-body); font-size: 13px;
+  outline: none; transition: border-color 0.15s; box-shadow: var(--shadow-sm);
+}
+.filter-input:focus { border-color: var(--sl-teal-light); }
+.filter-input::placeholder { color: var(--text-xlight); }
+.filter-pill {
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer;
+  border: 1.5px solid var(--border); color: var(--text-light); background: var(--white);
+  font-family: var(--font-body); transition: all 0.15s;
+}
+.filter-pill:hover { border-color: var(--sl-teal-light); color: var(--sl-teal); }
+.filter-pill.active { background: var(--sl-teal); border-color: var(--sl-teal); color: var(--white); }
+
+/* ── Table card ── */
+.table-card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; box-shadow: var(--shadow-sm); }
+.table-scroll { overflow-x: auto; max-height: 500px; overflow-y: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead { position: sticky; top: 0; z-index: 2; }
+th {
+  background: var(--sl-teal-xpale); color: var(--sl-teal-light);
+  font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 11px 16px; text-align: left; white-space: nowrap;
+  border-bottom: 1.5px solid var(--border);
+}
+th.num { text-align: right; }
+td {
+  padding: 11px 16px; border-bottom: 1px solid var(--border);
+  font-size: 12.5px; color: var(--text-dark); vertical-align: middle; white-space: nowrap;
+}
+td.num { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-mid); }
+tr:last-child td { border-bottom: none; }
+tbody tr { transition: background 0.1s; }
+tbody tr:hover { background: var(--sl-teal-xpale); }
+.sortable { cursor: pointer; user-select: none; }
+.sortable:hover { color: var(--sl-teal); }
+.sort-asc::after { content: ' ↑'; color: var(--sl-gold); }
+.sort-desc::after { content: ' ↓'; color: var(--sl-gold); }
+
+/* Totals row */
+tfoot tr td { background: var(--sl-teal-pale); color: var(--sl-teal); font-weight: 600; border-top: 2px solid var(--border-mid); font-size: 12px; }
+
+/* ── Tags ── */
+.tag { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 3px; font-size: 10px; font-weight: 600; font-family: var(--font-body); letter-spacing: 0.04em; }
+.tag-cad { background: var(--green-pale); color: var(--green); }
+.tag-usd { background: var(--blue-pale); color: var(--blue); }
+.tag-both { background: var(--red-pale); color: var(--red); }
+.tag-ratio { background: var(--amber-pale); color: var(--amber); }
+.tag-mv { background: var(--blue-pale); color: var(--blue); }
+
+/* ── Acct ID ── */
+.acct-id { font-weight: 600; color: var(--sl-teal); font-size: 12px; }
+.sym { font-weight: 700; color: var(--sl-teal); }
+
+/* ── Alert dot ── */
+.alert-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; flex-shrink: 0; }
+.dot-both { background: var(--red); }
+.dot-ratio { background: var(--amber); }
+.dot-mv { background: var(--blue); }
+
+/* ── Ratio bar ── */
+.ratio-cell { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.ratio-bar-track { width: 56px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.ratio-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+.ratio-val { min-width: 52px; text-align: right; font-weight: 600; font-size: 12px; }
+
+.flag-yes { color: var(--red); font-weight: 700; }
+.flag-no  { color: var(--text-xlight); }
+
+/* ── Upload success banner ── */
+.upload-success {
+  background: var(--green-pale); border: 1.5px solid #A9DFBF;
+  border-radius: 4px; padding: 10px 16px; font-size: 12px; color: var(--green);
+  display: none; align-items: center; gap: 8px; font-weight: 500;
+}
+.upload-success.show { display: flex; }
+
+/* ── Threshold panel ── */
+.threshold-panel {
+  background: var(--white); border: 1px solid var(--border); border-radius: 6px;
+  padding: 18px 22px; margin-bottom: 20px; display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+.threshold-group { display: flex; flex-direction: column; gap: 5px; }
+.threshold-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); }
+.threshold-input {
+  background: var(--sl-teal-xpale); border: 1.5px solid var(--border-mid); border-radius: 4px;
+  padding: 7px 12px; color: var(--sl-teal); font-family: var(--font-body); font-size: 13px;
+  font-weight: 600; width: 130px; outline: none; transition: border-color 0.15s;
+}
+.threshold-input:focus { border-color: var(--sl-teal); }
+.threshold-note { margin-left: auto; font-size: 11px; color: var(--text-xlight); line-height: 1.6; text-align: right; }
+
+/* ── Upload tab ── */
+.upload-card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 18px; }
+.upload-card-title { font-family: var(--font-display); font-size: 16px; font-weight: 500; color: var(--sl-teal); margin-bottom: 6px; }
+.upload-card-sub { font-size: 12px; color: var(--text-light); margin-bottom: 20px; }
+.upload-dropzone {
+  border: 2px dashed var(--border-mid); border-radius: 5px; padding: 16px 20px;
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+  color: var(--text-light); font-size: 13px; transition: all 0.2s;
+  position: relative; margin-bottom: 12px;
+}
+.upload-dropzone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.upload-dropzone:hover { border-color: var(--sl-teal-light); color: var(--sl-teal); background: var(--sl-teal-xpale); }
+.upload-dropzone-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); margin-bottom: 6px; }
+.spec-box { background: var(--sl-teal-xpale); border: 1px solid var(--sl-teal-pale); border-radius: 4px; padding: 14px 16px; font-size: 11px; color: var(--text-mid); line-height: 1.7; }
+.spec-box strong { color: var(--sl-teal); }
+
+.hist-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.hist-item:last-child { border-bottom: none; }
+.hist-time { color: var(--text-xlight); min-width: 65px; }
+.hist-type { background: var(--sl-teal-pale); color: var(--sl-teal); font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.06em; }
+.hist-file { flex: 1; color: var(--text-dark); }
+.hist-rows { color: var(--text-light); }
+
+.empty { text-align: center; padding: 40px; color: var(--text-xlight); font-size: 13px; }
+
+/* Decorative gold rule on headers */
+.gold-rule { width: 40px; height: 2px; background: var(--sl-gold); margin: 12px 0 20px; border-radius: 1px; }
+
+
+/* ── FX + KPI row ── */
+.fx-kpi-row { display: flex; align-items: stretch; gap: 16px; margin-bottom: 20px; }
+.fx-box {
+  background: var(--white); border: 1.5px solid var(--sl-gold);
+  border-radius: 6px; padding: 16px 20px; min-width: 210px; flex-shrink: 0;
+  box-shadow: 0 2px 8px var(--sl-gold-dim);
+}
+.fx-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sl-teal); margin-bottom: 8px; }
+.fx-input-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.fx-flag { font-size: 16px; line-height: 1; }
+.fx-input {
+  flex: 1; background: var(--sl-gold-pale); border: 1.5px solid var(--sl-gold);
+  border-radius: 4px; padding: 8px 10px; color: var(--sl-teal);
+  font-family: var(--font-body); font-size: 18px; font-weight: 700;
+  outline: none; width: 100%; transition: border-color 0.15s, box-shadow 0.15s;
+}
+.fx-input:focus { border-color: var(--sl-teal); box-shadow: 0 0 0 3px rgba(14,56,70,0.1); }
+.fx-hint { font-size: 10px; color: var(--text-xlight); line-height: 1.4; }
+.kpi-strip { flex: 1; display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; }
+
+/* ── Sub-tabs ── */
+.subtab-bar {
+  display: flex; gap: 2px; border-bottom: 2px solid var(--border);
+  margin-bottom: 16px;
+}
+.subtab {
+  display: flex; align-items: center; gap: 7px; padding: 9px 18px 11px;
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none; background: transparent;
+  color: var(--text-light); border-bottom: 2px solid transparent;
+  margin-bottom: -2px; transition: all 0.15s;
+}
+.subtab:hover { color: var(--sl-teal); }
+.subtab.active { color: var(--sl-teal); border-bottom-color: var(--sl-gold); font-weight: 600; }
+.subtab-badge {
+  background: var(--red); color: white; font-size: 10px;
+  font-weight: 600; padding: 1px 6px; border-radius: 10px;
+}
+
+/* ── CAD equiv column highlight ── */
+.th-cad-equiv {
+  background: var(--sl-gold-pale) !important; color: var(--sl-teal) !important;
+  font-weight: 700 !important; border-left: 2px solid var(--sl-gold) !important;
+  cursor: help;
+}
+.td-cad-equiv {
+  background: var(--sl-gold-pale); color: var(--sl-teal);
+  font-weight: 600; border-left: 2px solid rgba(236,171,35,0.35);
+}
+.fx-converted { font-size: 10px; color: var(--amber); margin-left: 2px; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sl-teal-light); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-lockup">
+        <!-- Sun Life sun SVG icon -->
+        <div class="brand-sun">
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="18" r="10" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.8"/>
+            <circle cx="14" cy="18" r="10" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8" stroke-dasharray="2 3"/>
+            <circle cx="14" cy="18" r="7" fill="var(--sl-gold)" opacity="0.9"/>
+            <circle cx="14" cy="18" r="4.5" fill="var(--sl-gold)"/>
+            <!-- rays -->
+            <path d="M20 16 L28 12" stroke="var(--sl-gold)" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M20 18 L29 18" stroke="var(--sl-gold)" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M20 20 L28 24" stroke="var(--sl-gold)" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="brand-name">
+          Sun Life Financial
+          <span>Margin Account Monitor</span>
+        </div>
+      </div>
+      <div class="brand-divider"></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Dashboard</div>
+      <div class="nav-item active" onclick="showTab('overview')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        Portfolio Overview
+      </div>
+
+      <div class="nav-item" onclick="showTab('concentration')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2L2 14h12L8 2z"/><path d="M8 6v3M8 11v.5"/></svg>
+        Concentration
+        <span class="nav-badge" id="alert-badge">6</span>
+      </div>
+      <div class="nav-group-label">Data Management</div>
+      <div class="nav-item" onclick="showTab('upload')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
+        Upload Reports
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-label">Report Date</div>
+      <div class="sidebar-footer-val" id="sidebar-date">—</div>
+      <div class="live-indicator">
+        <div class="live-dot"></div>
+        <span class="live-text">Sample data loaded</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="main">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-title-block">
+        <div class="page-eyebrow" id="page-eyebrow">Portfolio Overview</div>
+        <div class="page-title" id="page-title">Margin Account Dashboard</div>
+        <div class="page-sub" id="page-sub">Upload files to load data</div>
+      </div>
+      <div class="header-actions">
+        <div class="upload-success" id="upload-success">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 3L6 12l-3-3"/></svg>
+          Dashboard refreshed successfully
+        </div>
+        <label class="upload-zone">
+          <input type="file" accept=".xlsx,.csv" multiple onchange="handleUpload(event)">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
+          Upload Report
+        </label>
+        <button class="btn btn-primary" onclick="exportCSV()">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13h10M8 3v7M5 10l3 3 3-3"/></svg>
+          Export CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ OVERVIEW (now includes Account Review) ══ -->
+    <div class="content active" id="tab-overview">
+
+      <!-- FX Rate + KPI strip -->
+      <div class="fx-kpi-row">
+        <div class="fx-box">
+          <div class="fx-label">USD / CAD FX Rate</div>
+          <div class="fx-input-wrap">
+            <span class="fx-flag">🇺🇸→🇨🇦</span>
+            <input class="fx-input" type="number" id="fx-rate" value="1.3650" step="0.0001" min="0.5" max="3"
+                   oninput="onFxChange()" onchange="onFxChange()">
+          </div>
+          <div class="fx-hint">Used for CAD Equiv. TD Margin on USD accounts</div>
+        </div>
+        <div class="kpi-strip">
+          <div class="kpi">
+            <div class="kpi-label">Total Accounts</div>
+            <div class="kpi-value" id="kpi-total">24</div>
+            <div class="kpi-sub" id="kpi-total-sub">— CAD · — USD</div>
+          </div>
+          <div class="kpi gold-accent">
+            <div class="kpi-label">Portfolio MV</div>
+            <div class="kpi-value" id="kpi-mv">$6.5M</div>
+            <div class="kpi-sub">Total market value</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Total Loan Value</div>
+            <div class="kpi-value" id="kpi-loan">$2.9M</div>
+            <div class="kpi-sub">Margin exposure</div>
+          </div>
+          <div class="kpi green-accent">
+            <div class="kpi-label">Total Equity</div>
+            <div class="kpi-value" id="kpi-equity">$651K</div>
+            <div class="kpi-sub">Net account equity</div>
+          </div>
+          <div class="kpi red-accent">
+            <div class="kpi-label">Concentration Alerts</div>
+            <div class="kpi-value" id="kpi-alerts">6</div>
+            <div class="kpi-sub" id="kpi-alerts-sub">3 both · 0 MV · 3 ratio</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-tab switcher -->
+      <div class="subtab-bar">
+        <button class="subtab active" id="st-acct" onclick="switchSubtab('acct')">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h8"/></svg>
+          Account Review
+        </button>
+        <button class="subtab" id="st-alerts" onclick="switchSubtab('alerts')">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2L2 14h12L8 2z"/><path d="M8 6v3M8 11v.5"/></svg>
+          Concentration Alerts
+          <span class="subtab-badge" id="alert-subtab-badge">6</span>
+        </button>
+      </div>
+
+      <!-- ── Account Review sub-panel ── -->
+      <div id="sub-acct">
+        <div class="filter-bar" style="margin-bottom:14px;">
+          <input class="filter-input" type="text" placeholder="Search account, name, RR code, client…" id="acct-search" oninput="filterAccounts()">
+          <button class="filter-pill active" onclick="setAcctFilter('ALL',this)">All</button>
+          <button class="filter-pill" onclick="setAcctFilter('E',this)">CAD (E)</button>
+          <button class="filter-pill" onclick="setAcctFilter('F',this)">USD (F)</button>
+        </div>
+        <div class="table-card">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th class="sortable" onclick="sortAcct('id')">Account ID</th>
+                  <th class="sortable" onclick="sortAcct('rr')">RR Code</th>
+                  <th class="sortable" onclick="sortAcct('shortName')">Name</th>
+                  <th class="sortable" onclick="sortAcct('date')">Business Date</th>
+                  <th>Currency</th>
+                  <th class="num sortable" onclick="sortAcct('loan')">Loan Value</th>
+                  <th class="num sortable" onclick="sortAcct('tdBal')">TD Balance</th>
+                  <th class="num sortable" onclick="sortAcct('sdBal')">SD Balance</th>
+                  <th class="num sortable" onclick="sortAcct('mv')">Market Value</th>
+                  <th class="num sortable" onclick="sortAcct('equity')">Equity</th>
+                  <th class="num sortable" onclick="sortAcct('tdMarg')">TD Req. Margin</th>
+                  <th class="num th-cad-equiv" title="USD accounts converted at FX rate above; CAD accounts shown as-is">CAD Equiv. TD Margin ▾</th>
+                  <th class="num">TD Req. Secure</th>
+                  <th>Client</th>
+                  <th>Broker</th>
+                </tr>
+              </thead>
+              <tbody id="acct-tbody"></tbody>
+              <tfoot><tr id="acct-totals"></tr></tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Concentration Alerts sub-panel ── -->
+      <div id="sub-alerts" style="display:none;">
+        <div class="section-header">
+          <div class="section-title">Flagged Positions <span class="section-count" id="overview-count">6 positions flagged</span></div>
+          <button class="btn" onclick="showTab('concentration')">Full view →</button>
+        </div>
+        <div class="table-card">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Alert</th>
+                  <th>Account</th>
+                  <th>Name</th>
+                  <th>Symbol</th>
+                  <th>Security</th>
+                  <th class="num th-cad-equiv">Market Value (CAD)</th>
+                  <th class="num">Conc. Ratio (CAD)</th>
+                  <th class="num">Days to Liq.</th>
+                </tr>
+              </thead>
+              <tbody id="overview-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+        <!-- ══ CONCENTRATION ══ -->
+    <div class="content" id="tab-concentration">
+      <div class="threshold-panel">
+        <div class="threshold-group">
+          <div class="threshold-label">MV Threshold ($)</div>
+          <input class="threshold-input" type="number" id="mv-thresh" value="100000" onchange="applyThresholds()">
+        </div>
+        <div class="threshold-group">
+          <div class="threshold-label">Loan Ratio Threshold (%)</div>
+          <input class="threshold-input" type="number" id="ratio-thresh" value="30" onchange="applyThresholds()">
+        </div>
+        <div class="threshold-group">
+          <div class="threshold-label">Filter by Alert Type</div>
+          <div style="display:flex;gap:6px;margin-top:2px;">
+            <button class="filter-pill active" onclick="setConcFilter('ALL',this)">All</button>
+            <button class="filter-pill" onclick="setConcFilter('BOTH',this)">Both flags</button>
+            <button class="filter-pill" onclick="setConcFilter('MV',this)">MV only</button>
+            <button class="filter-pill" onclick="setConcFilter('RATIO',this)">Ratio only</button>
+          </div>
+        </div>
+        <div class="threshold-note">
+          Days to liquidate assumes 20% daily participation rate<br>
+          Standard assumption: 5 trading days to full exit
+        </div>
+      </div>
+      <div class="section-header">
+        <div class="section-title">Flagged Positions <span class="section-count" id="conc-count">6 alerts</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Alert</th>
+                <th>Account</th>
+                <th>RR</th>
+                <th>Name</th>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Ccy</th>
+                <th class="num">Quantity</th>
+                <th class="num">Close Price</th>
+                <th class="num th-cad-equiv">Position MV (CAD)</th>
+                <th class="num th-cad-equiv">Position LV (CAD)</th>
+                <th class="num th-cad-equiv" title="CAD equivalent: E loan + F loan × FX rate">Acct Loan Val. CAD (E+F)</th>
+                <th class="num">Conc. Ratio</th>
+                <th class="num">≥ $100K</th>
+                <th class="num">≥ 30% Ratio</th>
+                <th class="num">Days to Liq.</th>
+              </tr>
+            </thead>
+            <tbody id="conc-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ UPLOAD ══ -->
+    <div class="content" id="tab-upload">
+      <div style="max-width:640px;">
+        <div class="upload-card">
+          <div class="upload-card-title">Upload Daily Reports</div>
+          <div class="upload-card-sub">Select new Account and POS files each day. The dashboard updates immediately on load.</div>
+
+          <div>
+            <div class="upload-dropzone-label">Account Report (.xlsx / .csv)</div>
+            <label class="upload-dropzone">
+              <input type="file" accept=".xlsx,.csv" onchange="handleSingleUpload(event,'account')">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
+              <span id="acct-upload-label">Choose file or drag & drop</span>
+            </label>
+          </div>
+          <div>
+            <div class="upload-dropzone-label" style="margin-top:8px;">POS Report (.xlsx / .csv)</div>
+            <label class="upload-dropzone">
+              <input type="file" accept=".xlsx,.csv" onchange="handleSingleUpload(event,'pos')">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10V3M5 6l3-3 3 3M3 13h10"/></svg>
+              <span id="pos-upload-label">Choose file or drag & drop</span>
+            </label>
+          </div>
+
+          <div class="spec-box" style="margin-top:16px;">
+            <strong>Required — Account columns:</strong> Account Number, Account RR Code, Account Name, Account Short Name, Business Date, Account Currency, Account Loan Value, Account Trade Date Balance, Account Settlement Date Balance, Account Market Value, Account Equity, Trade Date Required To Margin, Trade Date Required To Secure, Client Code, Broker Code<br><br>
+            <strong>Required — POS columns:</strong> Account Number, Account RR Code, Account Short Name, Security Symbol, Security Description, Trade Quantity, Position Close Price, Price Currency, Position Market Value, Position Loan Value
+          </div>
+        </div>
+
+        <div class="upload-card">
+          <div class="upload-card-title">Upload History</div>
+          <div id="upload-history"><div class="empty">No uploads this session</div></div>
+        </div>
+
+        <div class="upload-card" style="background:var(--sl-teal-xpale);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--sl-teal)" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v4M8 10v1"/></svg>
+            <span style="font-size:12px;font-weight:600;color:var(--sl-teal);">Loaded files this session</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">Account file</div>
+              <div id="acct-file-name" style="font-size:13px;color:var(--text-mid);">No file loaded</div>
+              <div id="acct-file-rows" style="font-size:11px;color:var(--text-xlight);"></div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">POS file</div>
+              <div id="pos-file-name" style="font-size:13px;color:var(--text-mid);">No file loaded</div>
+              <div id="pos-file-rows" style="font-size:11px;color:var(--text-xlight);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const INITIAL = {"summary":{"totalAccounts":0,"cadAccounts":0,"usdAccounts":0,"totalAlerts":0,"bothAlerts":0,"mvAlerts":0,"ratioAlerts":0,"totalMV":0,"totalLoan":0,"totalEquity":0,"reportDate":"—"},"accounts":[],"concentration":[]};
+
+let DATA = JSON.parse(JSON.stringify(INITIAL));
+let acctFilter = 'ALL', concFilter = 'ALL', sortCol = null, sortDir = 1;
+let uploadHistory = [];
+
+const fmt  = n => n == null ? '—' : '$' + Math.round(n).toLocaleString();
+const fmt2 = n => n == null ? '—' : '$' + Number(n).toLocaleString('en-CA', {minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtK = n => { if(!n) return '—'; if(Math.abs(n)>=1e6) return '$'+(n/1e6).toFixed(1)+'M'; if(Math.abs(n)>=1e3) return '$'+(n/1e3).toFixed(0)+'K'; return '$'+Math.round(n); };
+const fmtPct = n => n == null ? '—' : n.toFixed(1)+'%';
+const fmtNum = n => n == null ? '—' : Math.round(n).toLocaleString();
+const fmtPrice = n => n == null ? '—' : '$'+n.toFixed(2);
+const fmtDate = d => { try { const s=String(d); return s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8); } catch(e){ return d; } }
+
+const PAGE_META = {
+  overview:      ['Portfolio Overview', 'Portfolio Overview', 'Account review & concentration alerts · suffix E (CAD) · F (USD)'],
+
+  concentration: ['Concentration Monitor', 'Concentration Monitor', 'Positions flagged by market value or loan value ratio'],
+  upload:        ['Data Management', 'Upload Reports', 'Load daily account and POS files to refresh the dashboard'],
+};
+
+function showTab(name) {
+  document.querySelectorAll('.content').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  const idx = { overview:0, concentration:1, upload:2 };
+  document.querySelectorAll('.nav-item')[idx[name]].classList.add('active');
+  const [ey, ti, su] = PAGE_META[name];
+  document.getElementById('page-eyebrow').textContent = ey;
+  document.getElementById('page-title').textContent = ti;
+  document.getElementById('page-sub').textContent = su + ' · Report date: ' + DATA.summary.reportDate;
+}
+
+function renderKPIs() {
+  const s = DATA.summary;
+  document.getElementById('kpi-total').textContent = s.totalAccounts;
+  const subEl = document.getElementById('kpi-total-sub');
+  if(subEl) subEl.textContent = s.cadAccounts + ' CAD · ' + s.usdAccounts + ' USD';
+  document.getElementById('kpi-mv').textContent = fmtK(s.totalMV);
+  document.getElementById('kpi-loan').textContent = fmtK(s.totalLoan);
+  document.getElementById('kpi-equity').textContent = fmtK(s.totalEquity);
+  document.getElementById('kpi-alerts').textContent = s.totalAlerts;
+  document.getElementById('kpi-alerts-sub').textContent = `${s.bothAlerts} both · ${s.mvAlerts} MV · ${s.ratioAlerts} ratio`;
+  document.getElementById('alert-badge').textContent = s.totalAlerts;
+  const sb = document.getElementById('alert-subtab-badge'); if(sb) sb.textContent = s.totalAlerts;
+  const d = s.reportDate;
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  try {
+    const p=d.split('-');
+    const dateStr = (p.length===3) ? months[parseInt(p[1])-1]+' '+p[2]+', '+p[0] : d;
+    document.getElementById('sidebar-date').textContent = dateStr;
+    document.getElementById('page-sub').textContent = PAGE_META[document.querySelector('.nav-item.active')?document.querySelector('.content.active').id.replace('tab-',''):'overview'][2] + ' · Report date: ' + (d||'—');
+  } catch(e){}
+}
+
+function renderOverview() {
+  const fx = getFxRate();
+  const mvT = parseFloat(document.getElementById('mv-thresh').value) || 100000;
+  const rtT = parseFloat(document.getElementById('ratio-thresh').value) / 100 || 0.30;
+
+  const rows = DATA.concentration.map(r => {
+    const mvCad   = toCad(r.mv, r.ccy);
+    const loanCad = cadLoanTotal(r);
+    const ratioCad = loanCad > 0 ? (mvCad / loanCad) * 100 : 0;
+    const mf = mvCad >= mvT, rf = ratioCad / 100 >= rtT;
+    const alert = (mf && rf) ? 'BOTH' : mf ? 'MV' : rf ? 'RATIO' : null;
+    return { ...r, mvCad, loanCad, ratioCad: parseFloat(ratioCad.toFixed(1)), alert };
+  }).filter(r => r.alert);
+
+  document.getElementById('overview-count').textContent = rows.length + ' positions flagged';
+  const tbody = document.getElementById('overview-tbody');
+  tbody.innerHTML = rows.map(r => {
+    const pct = Math.min(r.ratioCad, 400);
+    const barColor = r.alert==='BOTH' ? '#C0392B' : r.alert==='RATIO' ? '#D68910' : '#1A5276';
+    const isUSD = r.ccy && r.ccy.toUpperCase() === 'USD';
+    return `<tr>
+      <td><span class="alert-dot dot-${r.alert.toLowerCase()}"></span><span class="tag tag-${r.alert.toLowerCase()}">${r.alert}</span></td>
+      <td><span class="acct-id">${r.acct}</span></td>
+      <td>${r.name}</td>
+      <td><span class="sym">${r.symbol}</span></td>
+      <td style="color:var(--text-light);font-size:12px">${r.desc}</td>
+      <td class="num td-cad-equiv">${fmt(r.mvCad)}${isUSD ? `<span style="font-size:9px;color:var(--text-xlight);margin-left:3px;">×${fx.toFixed(4)}</span>` : ''}</td>
+      <td class="num">
+        <div class="ratio-cell">
+          <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:${Math.min(pct/4,100)}%;background:${barColor}"></div></div>
+          <span class="ratio-val" style="color:${barColor}">${fmtPct(r.ratioCad)}</span>
+        </div>
+      </td>
+      <td class="num" style="color:var(--amber);font-weight:600">${r.daysLiq}d</td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="8" class="empty">${DATA.concentration.length===0?'Upload files to load data':'No concentration alerts at current thresholds'}</td></tr>`;
+}
+
+function getFxRate() {
+  return parseFloat(document.getElementById('fx-rate').value) || 1.3650;
+}
+
+function cadEquiv(r) {
+  // CAD accounts: tdMarg as-is. USD accounts: tdMarg * FX rate
+  if (r.suffix === 'E') return r.tdMarg;
+  return r.tdMarg * getFxRate();
+}
+
+function onFxChange() { renderAccounts(); renderOverview(); renderConcentration(); }
+
+function switchSubtab(name) {
+  document.getElementById('sub-acct').style.display   = name === 'acct'   ? '' : 'none';
+  document.getElementById('sub-alerts').style.display = name === 'alerts' ? '' : 'none';
+  document.getElementById('st-acct').classList.toggle('active',   name === 'acct');
+  document.getElementById('st-alerts').classList.toggle('active', name === 'alerts');
+}
+
+function renderAccounts() {
+  const q = (document.getElementById('acct-search').value||'').toLowerCase();
+  let rows = DATA.accounts.filter(r => {
+    if(acctFilter!=='ALL' && r.suffix!==acctFilter) return false;
+    if(q && !JSON.stringify(r).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  if(sortCol) rows=[...rows].sort((a,b)=>{const av=a[sortCol],bv=b[sortCol];return(typeof av==='number'?(av-bv):String(av).localeCompare(String(bv)))*sortDir;});
+  const fx = getFxRate();
+  document.getElementById('acct-tbody').innerHTML = rows.map(r=>{
+    const cadEq = cadEquiv(r);
+    const isUSD = r.suffix === 'F';
+    return `<tr>
+    <td><span class="acct-id">${r.id}</span></td>
+    <td style="color:var(--text-light)">${r.rr}</td>
+    <td style="font-weight:500">${r.shortName}</td>
+    <td style="color:var(--text-light);font-size:12px">${r.date || '—'}</td>
+    <td><span class="tag tag-${r.ccy.toLowerCase()}">${r.ccy} · ${r.suffix}</span></td>
+    <td class="num">${fmt2(r.loan)}</td>
+    <td class="num">${fmt2(r.tdBal)}</td>
+    <td class="num">${fmt2(r.sdBal)}</td>
+    <td class="num">${fmt2(r.mv)}</td>
+    <td class="num" style="color:var(--green);font-weight:500">${fmt2(r.equity)}</td>
+    <td class="num">${fmt2(r.tdMarg)}</td>
+    <td class="num td-cad-equiv">${fmt2(cadEq)}${isUSD ? `<span class="fx-converted" title="USD × ${fx.toFixed(4)}">×${fx.toFixed(4)}</span>` : ''}</td>
+    <td class="num">${fmt2(r.tdSec)}</td>
+    <td style="color:var(--text-light)">${r.client}</td>
+    <td style="color:var(--text-light)">${r.broker}</td>
+  </tr>`;
+  }).join('')||`<tr><td colspan="15" class="empty">${DATA.accounts.length===0?'Upload an Account file to load data':'No accounts match filter'}</td></tr>`;
+  const sum=k=>rows.reduce((s,r)=>s+(r[k]||0),0);
+  const totalCadEquiv = rows.reduce((s,r)=>s+cadEquiv(r),0);
+  document.getElementById('acct-totals').innerHTML=`<td colspan="5" style="font-weight:600;color:var(--sl-teal)">TOTALS — ${rows.length} rows</td>
+    <td class="num">${fmt2(sum('loan'))}</td><td class="num">${fmt2(sum('tdBal'))}</td><td class="num">${fmt2(sum('sdBal'))}</td>
+    <td class="num">${fmt2(sum('mv'))}</td><td class="num" style="color:var(--green);font-weight:600">${fmt2(sum('equity'))}</td>
+    <td class="num">${fmt2(sum('tdMarg'))}</td>
+    <td class="num td-cad-equiv">${fmt2(totalCadEquiv)}</td>
+    <td class="num">${fmt2(sum('tdSec'))}</td><td colspan="2"></td>`;
+}
+
+function filterAccounts(){ renderAccounts(); }
+function setAcctFilter(v,el){ acctFilter=v; document.querySelectorAll('#sub-acct .filter-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAccounts(); }
+function sortAcct(col){ if(sortCol===col)sortDir*=-1; else{sortCol=col;sortDir=1;} document.querySelectorAll('#sub-acct th.sortable').forEach(th=>th.classList.remove('sort-asc','sort-desc')); event.target.classList.add(sortDir===1?'sort-asc':'sort-desc'); renderAccounts(); }
+
+function applyThresholds() {
+  // Restore full INITIAL concentration (renderConcentration applies thresholds + FX live)
+  DATA.concentration = INITIAL.concentration.map(r => ({ ...r }));
+  renderOverview();
+  renderConcentration();
+}
+
+function toCad(value, ccy) {
+  // Convert a value to CAD. If already CAD, return as-is. If USD, multiply by FX rate.
+  if (!ccy || ccy.toUpperCase() === 'CAD') return value;
+  return value * getFxRate();
+}
+
+function cadLoanTotal(r) {
+  // CAD-equivalent combined loan: cadLoan as-is, usdLoan * FX rate
+  const fx = getFxRate();
+  const cad = (r.cadLoan || 0);
+  const usd = (r.usdLoan || 0) * fx;
+  // Fallback: if no split stored, treat acctLoan as USD (legacy uploaded data)
+  if (!r.cadLoan && !r.usdLoan) return toCad(r.acctLoan, r.ccy);
+  return cad + usd;
+}
+
+function concRatioCad(r) {
+  const mvCad = toCad(r.mv, r.ccy);
+  const loanCad = cadLoanTotal(r);
+  return loanCad > 0 ? (mvCad / loanCad) * 100 : 0;
+}
+
+function renderConcentration() {
+  const fx = getFxRate();
+  const mvT  = parseFloat(document.getElementById('mv-thresh').value)  || 100000;
+  const rtT  = parseFloat(document.getElementById('ratio-thresh').value) / 100 || 0.30;
+
+  let rows = DATA.concentration.map(r => {
+    // Recompute CAD-equivalent values live using current FX rate
+    const mvCad    = toCad(r.mv, r.ccy);
+    const lvCad    = toCad(r.lv, r.ccy);
+    const loanCad  = cadLoanTotal(r);
+    const ratioCad = loanCad > 0 ? (mvCad / loanCad) * 100 : 0;
+    const mvF  = mvCad  >= mvT;
+    const rtF  = ratioCad / 100 >= rtT;
+    const alert = (mvF && rtF) ? 'BOTH' : mvF ? 'MV' : rtF ? 'RATIO' : null;
+    return { ...r, mvCad, lvCad, loanCad, ratioCad: parseFloat(ratioCad.toFixed(1)), mvFlag: mvF, ratFlag: rtF, alert };
+  }).filter(r => r.alert);
+
+  if (concFilter !== 'ALL') rows = rows.filter(r => r.alert === concFilter);
+  document.getElementById('conc-count').textContent = rows.length + ' alerts';
+
+  // Also update summary counts live
+  const allRows = DATA.concentration.map(r => {
+    const mvCad   = toCad(r.mv, r.ccy);
+    const loanCad = cadLoanTotal(r);
+    const ratioCad = loanCad > 0 ? (mvCad / loanCad) * 100 : 0;
+    const mf = mvCad >= mvT, rf = ratioCad / 100 >= rtT;
+    return (mf || rf) ? ((mf && rf) ? 'BOTH' : mf ? 'MV' : 'RATIO') : null;
+  }).filter(Boolean);
+  const s = DATA.summary;
+  s.totalAlerts  = allRows.length;
+  s.bothAlerts   = allRows.filter(a => a === 'BOTH').length;
+  s.mvAlerts     = allRows.filter(a => a === 'MV').length;
+  s.ratioAlerts  = allRows.filter(a => a === 'RATIO').length;
+  renderKPIs();
+
+  document.getElementById('conc-tbody').innerHTML = rows.map(r => {
+    const pct = Math.min(r.ratioCad, 400);
+    const barColor = r.alert === 'BOTH' ? '#C0392B' : r.alert === 'RATIO' ? '#D68910' : '#1A5276';
+    const dot = `dot-${r.alert.toLowerCase()}`;
+    const isUSD = r.ccy && r.ccy.toUpperCase() === 'USD';
+    const fxTag = isUSD
+      ? `<span style="font-size:9px;color:var(--text-xlight);margin-left:3px;" title="USD × ${fx.toFixed(4)}">×${fx.toFixed(4)}</span>`
+      : '';
+    return `<tr>
+      <td><span class="alert-dot ${dot}"></span><span class="tag tag-${r.alert.toLowerCase()}">${r.alert}</span></td>
+      <td><span class="acct-id">${r.acct}</span></td>
+      <td style="color:var(--text-light)">${r.rr}</td>
+      <td style="font-weight:500">${r.name}</td>
+      <td><span class="sym">${r.symbol}</span></td>
+      <td style="color:var(--text-light);font-size:12px">${r.desc}</td>
+      <td style="color:var(--text-light)">${r.ccy}</td>
+      <td class="num">${fmtNum(r.qty)}</td>
+      <td class="num">${isUSD ? fmtPrice(r.close) : fmtPrice(r.close)}</td>
+      <td class="num td-cad-equiv" title="CAD equivalent${isUSD ? ': USD ' + fmt(r.mv) + ' × ' + fx.toFixed(4) : ''}">${fmt(r.mvCad)}${fxTag}</td>
+      <td class="num td-cad-equiv" title="CAD equivalent position loan value">${fmt(r.lvCad)}${fxTag}</td>
+      <td class="num td-cad-equiv" title="CAD equivalent: E loan $${(r.cadLoan||0).toLocaleString()} + F loan $${(r.usdLoan||0).toLocaleString()} USD × ${fx.toFixed(4)}">${fmt(r.loanCad)}<span style="font-size:9px;color:var(--text-xlight);margin-left:3px;">E+F</span></td>
+      <td class="num"><div class="ratio-cell"><div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:${Math.min(pct/4,100)}%;background:${barColor}"></div></div><span class="ratio-val" style="color:${barColor}">${fmtPct(r.ratioCad)}</span></div></td>
+      <td class="num"><span class="${r.mvFlag ? 'flag-yes' : 'flag-no'}">${r.mvFlag ? 'YES' : 'no'}</span></td>
+      <td class="num"><span class="${r.ratFlag ? 'flag-yes' : 'flag-no'}">${r.ratFlag ? 'YES' : 'no'}</span></td>
+      <td class="num" style="color:var(--amber);font-weight:600">${r.daysLiq}d</td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="16" class="empty">${DATA.concentration.length===0?'Upload Account and POS files to load concentration data':'No positions match current thresholds'}</td></tr>`;
+}
+function setConcFilter(v,el){ concFilter=v; document.querySelectorAll('#tab-concentration .filter-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderConcentration(); }
+
+function handleUpload(e){ Array.from(e.target.files).forEach(f=>{ const isA=f.name.toLowerCase().includes('account')||f.name.toLowerCase().includes('acct'); handleSingleUpload({target:{files:[f]}},isA?'account':'pos'); }); }
+
+function handleSingleUpload(e,type) {
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try {
+      const wb=XLSX.read(ev.target.result,{type:'array'});
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:null});
+      if(type==='account'){ document.getElementById('acct-file-name').textContent=file.name; document.getElementById('acct-file-rows').textContent=rows.length+' rows loaded'; document.getElementById('acct-upload-label').textContent=file.name; processAccountData(rows); }
+      else { document.getElementById('pos-file-name').textContent=file.name; document.getElementById('pos-file-rows').textContent=rows.length+' rows loaded'; document.getElementById('pos-upload-label').textContent=file.name; processPOSData(rows); }
+      logUpload(file.name,type,rows.length); showSuccess();
+    } catch(err){ alert('Error reading file: '+err.message); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// Derive the base (first 6 chars) and suffix (last char) from a 7-char account ID.
+// E = CAD, F = USD per the account number convention.
+function acctBase(id)   { return String(id).slice(0, -1); }   // e.g. "AB1234E" → "AB1234"
+function acctSuffix(id) { return String(id).slice(-1).toUpperCase(); } // "E" or "F"
+
+function processAccountData(rows) {
+  DATA.accounts = rows
+    .filter(r => {
+      // Only include accounts whose ID ends in E (CAD) or F (USD)
+      const rawId = String(r['Account Number'] || '').trim();
+      const lastChar = rawId.slice(-1).toUpperCase();
+      return lastChar === 'E' || lastChar === 'F';
+    })
+    .map(r => {
+      const rawId  = String(r['Account Number'] || '').trim();
+      const ccy    = (r['Account Currency'] || '').toUpperCase();
+      const suffix = acctSuffix(rawId);   // last char of the 7-char account ID
+      const base   = acctBase(rawId);     // first 6 chars — groups E+F together
+      return {
+        id:       rawId,                  // full 7-char ID, used as-is for display
+        base,                             // 6-char grouping key
+        suffix,                           // 'E' (CAD) or 'F' (USD)
+        rr:       String(r['Account RR Code']   || ''),
+        name:     String(r['Account Name']      || ''),
+        shortName:String(r['Account Short Name']|| ''),
+        date:     String(r['Business Date']     || ''),
+        ccy,
+        loan:     parseFloat(r['Account Loan Value'])                  || 0,
+        tdBal:    parseFloat(r['Account Trade Date Balance'])          || 0,
+        sdBal:    parseFloat(r['Account Settlement Date Balance'])     || 0,
+        mv:       parseFloat(r['Account Market Value'])                || 0,
+        equity:   parseFloat(r['Account Equity'])                      || 0,
+        tdMarg:   parseFloat(r['Trade Date Required To Margin'])       || 0,
+        tdSec:    parseFloat(r['Trade Date Required To Secure'])       || 0,
+        client:   String(r['Client Code']  || ''),
+        broker:   String(r['Broker Code']  || ''),
+      };
+    });
+
+  const s = DATA.summary;
+  s.totalAccounts = DATA.accounts.length;
+  s.cadAccounts   = DATA.accounts.filter(a => a.suffix === 'E').length;
+  s.usdAccounts   = DATA.accounts.filter(a => a.suffix === 'F').length;
+  s.totalMV       = DATA.accounts.reduce((t, a) => t + a.mv,   0);
+  s.totalLoan     = DATA.accounts.reduce((t, a) => t + a.loan, 0);
+  s.totalEquity   = DATA.accounts.reduce((t, a) => t + a.equity, 0);
+  renderAll();
+}
+
+function processPOSData(rows) {
+  const mvT=parseFloat(document.getElementById('mv-thresh').value)||100000;
+  const rtT=parseFloat(document.getElementById('ratio-thresh').value)/100||0.30;
+
+  // Build split CAD/USD loan maps keyed by base (first 6 chars), for accurate FX conversion
+  const cadLoanMap={}, usdLoanMap={};
+  DATA.accounts.forEach(a=>{
+    // a.base = first 6 chars of the 7-char account ID (groups E and F sub-accounts)
+    const base = a.base;
+    if(a.ccy==='CAD') cadLoanMap[base]=(cadLoanMap[base]||0)+a.loan;
+    else               usdLoanMap[base]=(usdLoanMap[base]||0)+a.loan;
+  });
+
+  DATA.concentration = rows
+    .filter(r => (r['Account Type'] || r['AccountType'] || '').toUpperCase() === 'MRL')
+    .map(r => {
+      const mv    = parseFloat(r['Position Market Value']) || 0;
+      const pC    = (r['Price Currency'] || 'USD').toUpperCase();
+      const posId = String(r['Account Number'] || '').trim();
+      const base  = posId.slice(0, -1); // first 6 chars — matches account base key
+      const cLoan = cadLoanMap[base] || 0;
+      const uLoan = usdLoanMap[base] || 0;
+      const totalLoan = cLoan + uLoan;
+      const ratio = totalLoan > 0 ? (mv / totalLoan) * 100 : 0;
+      const mvF   = mv >= mvT;
+      const rtF   = ratio / 100 >= rtT;
+      if (!mvF && !rtF) return null;
+      return {
+        acct:         posId,
+        base,
+        rr:           String(r['Account RR Code']        || ''),
+        name:         String(r['Account Short Name']     || ''),
+        symbol:       String(r['Security Symbol']        || ''),
+        desc:         String(r['Security Description']   || ''),
+        qty:          parseInt(r['Trade Quantity'])       || 0,
+        close:        parseFloat(r['Position Close Price'])|| 0,
+        mv,
+        lv:           parseFloat(r['Position Loan Value'])|| 0,
+        cadLoan:      cLoan,
+        usdLoan:      uLoan,
+        acctLoan:     totalLoan,
+        acctLoanNote: 'E+F combined',
+        ratio:        parseFloat(ratio.toFixed(1)),
+        daysLiq:      5,
+        mvFlag:       mvF,
+        ratFlag:      rtF,
+        ccy:          pC,
+        acctType:     'MRL',
+        alert:        (mvF && rtF) ? 'BOTH' : mvF ? 'MV' : 'RATIO',
+      };
+    }).filter(Boolean);
+
+  const s = DATA.summary;
+  s.totalAlerts = DATA.concentration.length;
+  s.bothAlerts  = DATA.concentration.filter(r => r.alert === 'BOTH').length;
+  s.mvAlerts    = DATA.concentration.filter(r => r.alert === 'MV').length;
+  s.ratioAlerts = DATA.concentration.filter(r => r.alert === 'RATIO').length;
+  renderAll();
+}
+
+function logUpload(filename,type,rows) {
+  uploadHistory=[{time:new Date().toLocaleTimeString(),file:filename,type,rows},...uploadHistory].slice(0,10);
+  document.getElementById('upload-history').innerHTML=uploadHistory.map(h=>`<div class="hist-item"><span class="hist-time">${h.time}</span><span class="hist-type">${h.type}</span><span class="hist-file">${h.file}</span><span class="hist-rows">${h.rows} rows</span></div>`).join('');
+}
+
+function showSuccess() { const el=document.getElementById('upload-success'); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),4000); }
+
+function exportCSV() {
+  const tab=document.querySelector('.content.active').id.replace('tab-','');
+  let headers,rows;
+  if(tab==='overview'){ const fx=getFxRate(); headers=['Account ID','RR Code','Short Name','Business Date','Currency','Loan Value','TD Balance','SD Balance','Market Value','Equity','TD Req Margin','CAD Equiv TD Margin (FX:'+fx.toFixed(4)+')','TD Req Secure','Client','Broker']; rows=DATA.accounts.map(r=>[r.id,r.rr,r.shortName,r.date||'',r.ccy,Number(r.loan).toFixed(2),Number(r.tdBal).toFixed(2),Number(r.sdBal).toFixed(2),Number(r.mv).toFixed(2),Number(r.equity).toFixed(2),Number(r.tdMarg).toFixed(2),cadEquiv(r).toFixed(2),Number(r.tdSec).toFixed(2),r.client,r.broker]); }
+  else { const fx=getFxRate(); headers=['Account','RR','Name','Symbol','Description','Orig Ccy','Qty','Close Price','MV (CAD)','LV (CAD)','Acct Loan CAD (E+F, FX:'+fx.toFixed(4)+')','Conc% (CAD)','Days Liq','MV Flag','Ratio Flag','Alert']; rows=DATA.concentration.map(r=>{const mvC=toCad(r.mv,r.ccy),lvC=toCad(r.lv,r.ccy),lnC=cadLoanTotal(r),rt=lnC>0?(mvC/lnC*100):0;return[r.acct,r.rr,r.name,r.symbol,r.desc,r.ccy,r.qty,r.close,mvC.toFixed(2),lvC.toFixed(2),lnC.toFixed(2),rt.toFixed(1),r.daysLiq,mvC>=(parseFloat(document.getElementById('mv-thresh').value)||100000)?'YES':'no',rt/100>=(parseFloat(document.getElementById('ratio-thresh').value)/100||0.30)?'YES':'no',r.alert];});}
+  const csv=[headers,...rows].map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download=`sunlife_margin_${tab}_${DATA.summary.reportDate}.csv`; a.click();
+}
+
+function renderAll() { renderKPIs(); renderOverview(); renderAccounts(); renderConcentration(); }
+renderAll();
+</script>
+</body>
+</html>
