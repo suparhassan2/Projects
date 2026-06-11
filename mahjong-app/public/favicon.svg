@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect x="8" y="4" width="48" height="56" rx="8" fill="#fbfaf5" stroke="#e2ddc9" stroke-width="2"/>
+  <text x="32" y="30" font-size="26" text-anchor="middle" fill="#cc3311" font-family="serif" font-weight="bold">中</text>
+  <circle cx="22" cy="46" r="5" fill="#0072b2"/>
+  <circle cx="32" cy="46" r="5" fill="#009e73"/>
+  <circle cx="42" cy="46" r="5" fill="#d55e00"/>
+</svg>

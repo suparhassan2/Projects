@@ -1,0 +1,833 @@
+{
+  "meta": {
+    "variant": "traditional-hk",
+    "distinct": 42,
+    "total": 144,
+    "suited": 27,
+    "honors": 7,
+    "bonus": 8
+  },
+  "tiles": [
+    {
+      "id": "char-1",
+      "category": "suit",
+      "suit": "characters",
+      "rank": 1,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": true,
+      "names": {
+        "en": "1 Characters",
+        "zh": "一萬",
+        "pinyin": "yī wàn",
+        "jyutping": "jat1 maan6"
+      },
+      "glyph": "🀇",
+      "pronunciationHint": "Say the number, then \"wàn\". HK: \"maan6\".",
+      "color": "#0072b2",
+      "note": "Also called 'Myriads' or 'Ten-thousands'. The character 萬 means 10,000. Rank 1 is a terminal."
+    },
+    {
+      "id": "char-2",
+      "category": "suit",
+      "suit": "characters",
+      "rank": 2,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "2 Characters",
+        "zh": "二萬",
+        "pinyin": "èr wàn",
+        "jyutping": "ji6 maan6"
+      },
+      "glyph": "🀈",
+      "pronunciationHint": "Say the number, then \"wàn\". HK: \"maan6\".",
+      "color": "#0072b2",
+      "note": "Also called 'Myriads' or 'Ten-thousands'. The character 萬 means 10,000."
+    },
+    {
+      "id": "char-3",
+      "category": "suit",
+      "suit": "characters",
+      "rank": 3,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "3 Characters",
+        "zh": "三萬",
+        "pinyin": "sān wàn",
+        "jyutping": "saam1 maan6"
+      },
+      "glyph": "🀉",
+      "pronunciationHint": "Say the number, then \"wàn\". HK: \"maan6\".",
+      "color": "#0072b2",
+      "note": "Also called 'Myriads' or 'Ten-thousands'. The character 萬 means 10,000."
+    },
+    {
+      "id": "char-4",
+      "category": "suit",
+      "suit": "characters",
+      "rank": 4,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "4 Characters",
+        "zh": "四萬",
+        "pinyin": "sì wàn",
+        "jyutping": "sei3 maan6"
+      },
+      "glyph": "🀊",
+      "pronunciationHint": "Say the number, then \"wàn\". HK: \"maan6\".",
+      "color": "#0072b2",
+      "note": "Also called 'Myriads' or 'Ten-thousands'. The character 萬 means 10,000."
+    },
+    {
+      "id": "char-5",
+      "category": "suit",
+      "suit": "characters",
+      "rank": 5,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "5 Characters",
+        "zh": "五萬",
+        "pinyin": "wǔ wàn",
+        "jyutping": "ng5 maan6"
+      },
+      "glyph": "🀋",
+      "pronunciationHint": "Say the number, then \"wàn\". HK: \"maan6\".",
+      "color": "#0072b2",
+      "note": "Also called 'Myriads' or 'Ten-thousands'. The character 萬 means 10,000."
+    },
+    {
+      "id": "char-6",
+      "category": "suit",
+      "suit": "characters",
+      "rank": 6,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "6 Characters",
+        "zh": "六萬",
+        "pinyin": "liù wàn",
+        "jyutping": "luk6 maan6"
+      },
+      "glyph": "🀌",
+      "pronunciationHint": "Say the number, then \"wàn\". HK: \"maan6\".",
+      "color": "#0072b2",
+      "note": "Also called 'Myriads' or 'Ten-thousands'. The character 萬 means 10,000."
+    },
+    {
+      "id": "char-7",
+      "category": "suit",
+      "suit": "characters",
+      "rank": 7,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "7 Characters",
+        "zh": "七萬",
+        "pinyin": "qī wàn",
+        "jyutping": "cat1 maan6"
+      },
+      "glyph": "🀍",
+      "pronunciationHint": "Say the number, then \"wàn\". HK: \"maan6\".",
+      "color": "#0072b2",
+      "note": "Also called 'Myriads' or 'Ten-thousands'. The character 萬 means 10,000."
+    },
+    {
+      "id": "char-8",
+      "category": "suit",
+      "suit": "characters",
+      "rank": 8,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "8 Characters",
+        "zh": "八萬",
+        "pinyin": "bā wàn",
+        "jyutping": "baat3 maan6"
+      },
+      "glyph": "🀎",
+      "pronunciationHint": "Say the number, then \"wàn\". HK: \"maan6\".",
+      "color": "#0072b2",
+      "note": "Also called 'Myriads' or 'Ten-thousands'. The character 萬 means 10,000."
+    },
+    {
+      "id": "char-9",
+      "category": "suit",
+      "suit": "characters",
+      "rank": 9,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": true,
+      "names": {
+        "en": "9 Characters",
+        "zh": "九萬",
+        "pinyin": "jiǔ wàn",
+        "jyutping": "gau2 maan6"
+      },
+      "glyph": "🀏",
+      "pronunciationHint": "Say the number, then \"wàn\". HK: \"maan6\".",
+      "color": "#0072b2",
+      "note": "Also called 'Myriads' or 'Ten-thousands'. The character 萬 means 10,000. Rank 9 is a terminal."
+    },
+    {
+      "id": "bam-1",
+      "category": "suit",
+      "suit": "bamboo",
+      "rank": 1,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": true,
+      "names": {
+        "en": "1 Bamboo",
+        "zh": "一索",
+        "pinyin": "yī suǒ",
+        "jyutping": "jat1 saak3"
+      },
+      "glyph": "🀐",
+      "pronunciationHint": "Say the number, then \"suǒ\". HK: \"saak3\".",
+      "color": "#009e73",
+      "note": "1 Bamboo is traditionally drawn as a bird, not a stick. Rank 1 is a terminal."
+    },
+    {
+      "id": "bam-2",
+      "category": "suit",
+      "suit": "bamboo",
+      "rank": 2,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "2 Bamboo",
+        "zh": "二索",
+        "pinyin": "èr suǒ",
+        "jyutping": "ji6 saak3"
+      },
+      "glyph": "🀑",
+      "pronunciationHint": "Say the number, then \"suǒ\". HK: \"saak3\".",
+      "color": "#009e73",
+      "note": "1 Bamboo is traditionally drawn as a bird, not a stick."
+    },
+    {
+      "id": "bam-3",
+      "category": "suit",
+      "suit": "bamboo",
+      "rank": 3,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "3 Bamboo",
+        "zh": "三索",
+        "pinyin": "sān suǒ",
+        "jyutping": "saam1 saak3"
+      },
+      "glyph": "🀒",
+      "pronunciationHint": "Say the number, then \"suǒ\". HK: \"saak3\".",
+      "color": "#009e73",
+      "note": "1 Bamboo is traditionally drawn as a bird, not a stick."
+    },
+    {
+      "id": "bam-4",
+      "category": "suit",
+      "suit": "bamboo",
+      "rank": 4,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "4 Bamboo",
+        "zh": "四索",
+        "pinyin": "sì suǒ",
+        "jyutping": "sei3 saak3"
+      },
+      "glyph": "🀓",
+      "pronunciationHint": "Say the number, then \"suǒ\". HK: \"saak3\".",
+      "color": "#009e73",
+      "note": "1 Bamboo is traditionally drawn as a bird, not a stick."
+    },
+    {
+      "id": "bam-5",
+      "category": "suit",
+      "suit": "bamboo",
+      "rank": 5,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "5 Bamboo",
+        "zh": "五索",
+        "pinyin": "wǔ suǒ",
+        "jyutping": "ng5 saak3"
+      },
+      "glyph": "🀔",
+      "pronunciationHint": "Say the number, then \"suǒ\". HK: \"saak3\".",
+      "color": "#009e73",
+      "note": "1 Bamboo is traditionally drawn as a bird, not a stick."
+    },
+    {
+      "id": "bam-6",
+      "category": "suit",
+      "suit": "bamboo",
+      "rank": 6,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "6 Bamboo",
+        "zh": "六索",
+        "pinyin": "liù suǒ",
+        "jyutping": "luk6 saak3"
+      },
+      "glyph": "🀕",
+      "pronunciationHint": "Say the number, then \"suǒ\". HK: \"saak3\".",
+      "color": "#009e73",
+      "note": "1 Bamboo is traditionally drawn as a bird, not a stick."
+    },
+    {
+      "id": "bam-7",
+      "category": "suit",
+      "suit": "bamboo",
+      "rank": 7,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "7 Bamboo",
+        "zh": "七索",
+        "pinyin": "qī suǒ",
+        "jyutping": "cat1 saak3"
+      },
+      "glyph": "🀖",
+      "pronunciationHint": "Say the number, then \"suǒ\". HK: \"saak3\".",
+      "color": "#009e73",
+      "note": "1 Bamboo is traditionally drawn as a bird, not a stick."
+    },
+    {
+      "id": "bam-8",
+      "category": "suit",
+      "suit": "bamboo",
+      "rank": 8,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "8 Bamboo",
+        "zh": "八索",
+        "pinyin": "bā suǒ",
+        "jyutping": "baat3 saak3"
+      },
+      "glyph": "🀗",
+      "pronunciationHint": "Say the number, then \"suǒ\". HK: \"saak3\".",
+      "color": "#009e73",
+      "note": "1 Bamboo is traditionally drawn as a bird, not a stick."
+    },
+    {
+      "id": "bam-9",
+      "category": "suit",
+      "suit": "bamboo",
+      "rank": 9,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": true,
+      "names": {
+        "en": "9 Bamboo",
+        "zh": "九索",
+        "pinyin": "jiǔ suǒ",
+        "jyutping": "gau2 saak3"
+      },
+      "glyph": "🀘",
+      "pronunciationHint": "Say the number, then \"suǒ\". HK: \"saak3\".",
+      "color": "#009e73",
+      "note": "1 Bamboo is traditionally drawn as a bird, not a stick. Rank 9 is a terminal."
+    },
+    {
+      "id": "cir-1",
+      "category": "suit",
+      "suit": "circles",
+      "rank": 1,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": true,
+      "names": {
+        "en": "1 Circles",
+        "zh": "一筒",
+        "pinyin": "yī tǒng",
+        "jyutping": "jat1 tung4"
+      },
+      "glyph": "🀙",
+      "pronunciationHint": "Say the number, then \"tǒng\". HK: \"tung4\".",
+      "color": "#d55e00",
+      "note": "Also called 'Dots' or 'Wheels'. HK players often say 餅 (béng). Rank 1 is a terminal."
+    },
+    {
+      "id": "cir-2",
+      "category": "suit",
+      "suit": "circles",
+      "rank": 2,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "2 Circles",
+        "zh": "二筒",
+        "pinyin": "èr tǒng",
+        "jyutping": "ji6 tung4"
+      },
+      "glyph": "🀚",
+      "pronunciationHint": "Say the number, then \"tǒng\". HK: \"tung4\".",
+      "color": "#d55e00",
+      "note": "Also called 'Dots' or 'Wheels'. HK players often say 餅 (béng)."
+    },
+    {
+      "id": "cir-3",
+      "category": "suit",
+      "suit": "circles",
+      "rank": 3,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "3 Circles",
+        "zh": "三筒",
+        "pinyin": "sān tǒng",
+        "jyutping": "saam1 tung4"
+      },
+      "glyph": "🀛",
+      "pronunciationHint": "Say the number, then \"tǒng\". HK: \"tung4\".",
+      "color": "#d55e00",
+      "note": "Also called 'Dots' or 'Wheels'. HK players often say 餅 (béng)."
+    },
+    {
+      "id": "cir-4",
+      "category": "suit",
+      "suit": "circles",
+      "rank": 4,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "4 Circles",
+        "zh": "四筒",
+        "pinyin": "sì tǒng",
+        "jyutping": "sei3 tung4"
+      },
+      "glyph": "🀜",
+      "pronunciationHint": "Say the number, then \"tǒng\". HK: \"tung4\".",
+      "color": "#d55e00",
+      "note": "Also called 'Dots' or 'Wheels'. HK players often say 餅 (béng)."
+    },
+    {
+      "id": "cir-5",
+      "category": "suit",
+      "suit": "circles",
+      "rank": 5,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "5 Circles",
+        "zh": "五筒",
+        "pinyin": "wǔ tǒng",
+        "jyutping": "ng5 tung4"
+      },
+      "glyph": "🀝",
+      "pronunciationHint": "Say the number, then \"tǒng\". HK: \"tung4\".",
+      "color": "#d55e00",
+      "note": "Also called 'Dots' or 'Wheels'. HK players often say 餅 (béng)."
+    },
+    {
+      "id": "cir-6",
+      "category": "suit",
+      "suit": "circles",
+      "rank": 6,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "6 Circles",
+        "zh": "六筒",
+        "pinyin": "liù tǒng",
+        "jyutping": "luk6 tung4"
+      },
+      "glyph": "🀞",
+      "pronunciationHint": "Say the number, then \"tǒng\". HK: \"tung4\".",
+      "color": "#d55e00",
+      "note": "Also called 'Dots' or 'Wheels'. HK players often say 餅 (béng)."
+    },
+    {
+      "id": "cir-7",
+      "category": "suit",
+      "suit": "circles",
+      "rank": 7,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "7 Circles",
+        "zh": "七筒",
+        "pinyin": "qī tǒng",
+        "jyutping": "cat1 tung4"
+      },
+      "glyph": "🀟",
+      "pronunciationHint": "Say the number, then \"tǒng\". HK: \"tung4\".",
+      "color": "#d55e00",
+      "note": "Also called 'Dots' or 'Wheels'. HK players often say 餅 (béng)."
+    },
+    {
+      "id": "cir-8",
+      "category": "suit",
+      "suit": "circles",
+      "rank": 8,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "8 Circles",
+        "zh": "八筒",
+        "pinyin": "bā tǒng",
+        "jyutping": "baat3 tung4"
+      },
+      "glyph": "🀠",
+      "pronunciationHint": "Say the number, then \"tǒng\". HK: \"tung4\".",
+      "color": "#d55e00",
+      "note": "Also called 'Dots' or 'Wheels'. HK players often say 餅 (béng)."
+    },
+    {
+      "id": "cir-9",
+      "category": "suit",
+      "suit": "circles",
+      "rank": 9,
+      "copies": 4,
+      "isHonor": false,
+      "isBonus": false,
+      "isTerminal": true,
+      "names": {
+        "en": "9 Circles",
+        "zh": "九筒",
+        "pinyin": "jiǔ tǒng",
+        "jyutping": "gau2 tung4"
+      },
+      "glyph": "🀡",
+      "pronunciationHint": "Say the number, then \"tǒng\". HK: \"tung4\".",
+      "color": "#d55e00",
+      "note": "Also called 'Dots' or 'Wheels'. HK players often say 餅 (béng). Rank 9 is a terminal."
+    },
+    {
+      "id": "wind-east",
+      "category": "wind",
+      "rank": 1,
+      "copies": 4,
+      "isHonor": true,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "East Wind",
+        "zh": "東",
+        "pinyin": "dōng",
+        "jyutping": "dung1"
+      },
+      "glyph": "🀀",
+      "pronunciationHint": "\"dōng\" (HK: \"dung1\").",
+      "color": "#332288",
+      "note": "The dealer is always East. Round 1 is the East round."
+    },
+    {
+      "id": "wind-south",
+      "category": "wind",
+      "rank": 2,
+      "copies": 4,
+      "isHonor": true,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "South Wind",
+        "zh": "南",
+        "pinyin": "nán",
+        "jyutping": "naam4"
+      },
+      "glyph": "🀁",
+      "pronunciationHint": "\"nán\" (HK: \"naam4\").",
+      "color": "#332288",
+      "note": "Seat order goes counter-clockwise: East → South → West → North."
+    },
+    {
+      "id": "wind-west",
+      "category": "wind",
+      "rank": 3,
+      "copies": 4,
+      "isHonor": true,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "West Wind",
+        "zh": "西",
+        "pinyin": "xī",
+        "jyutping": "sai1"
+      },
+      "glyph": "🀂",
+      "pronunciationHint": "\"xī\" (HK: \"sai1\").",
+      "color": "#332288"
+    },
+    {
+      "id": "wind-north",
+      "category": "wind",
+      "rank": 4,
+      "copies": 4,
+      "isHonor": true,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "North Wind",
+        "zh": "北",
+        "pinyin": "běi",
+        "jyutping": "bak1"
+      },
+      "glyph": "🀃",
+      "pronunciationHint": "\"běi\" (HK: \"bak1\").",
+      "color": "#332288"
+    },
+    {
+      "id": "dragon-red",
+      "category": "dragon",
+      "copies": 4,
+      "isHonor": true,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "Red Dragon",
+        "zh": "中",
+        "pinyin": "zhōng",
+        "jyutping": "zung1"
+      },
+      "glyph": "🀄",
+      "pronunciationHint": "\"zhōng\" (HK: \"zung1\").",
+      "color": "#cc3311",
+      "note": "中 = 'centre/hit'. A pung of any dragon scores faan."
+    },
+    {
+      "id": "dragon-green",
+      "category": "dragon",
+      "copies": 4,
+      "isHonor": true,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "Green Dragon",
+        "zh": "發",
+        "pinyin": "fā",
+        "jyutping": "faat3"
+      },
+      "glyph": "🀅",
+      "pronunciationHint": "\"fā\" (HK: \"faat3\").",
+      "color": "#009e73",
+      "note": "發 = 'prosper/get rich' (from 發財)."
+    },
+    {
+      "id": "dragon-white",
+      "category": "dragon",
+      "copies": 4,
+      "isHonor": true,
+      "isBonus": false,
+      "isTerminal": false,
+      "names": {
+        "en": "White Dragon",
+        "zh": "白",
+        "pinyin": "bái",
+        "jyutping": "baak6"
+      },
+      "glyph": "🀆",
+      "pronunciationHint": "\"bái\" (HK: \"baak6\").",
+      "color": "#555555",
+      "note": "白 = 'white/blank'. Often shown as an empty blue frame."
+    },
+    {
+      "id": "flower-1",
+      "category": "flower",
+      "rank": 1,
+      "copies": 1,
+      "isHonor": false,
+      "isBonus": true,
+      "isTerminal": false,
+      "names": {
+        "en": "Plum (Flower)",
+        "zh": "梅",
+        "pinyin": "méi",
+        "jyutping": "mui4"
+      },
+      "glyph": "🀢",
+      "pronunciationHint": "\"méi\" — one of the Four Flowers (四花).",
+      "color": "#aa44aa",
+      "note": "Bonus tile. Pairs with seat East (1). When drawn, set it aside, score it, and draw a replacement."
+    },
+    {
+      "id": "flower-2",
+      "category": "flower",
+      "rank": 2,
+      "copies": 1,
+      "isHonor": false,
+      "isBonus": true,
+      "isTerminal": false,
+      "names": {
+        "en": "Orchid (Flower)",
+        "zh": "蘭",
+        "pinyin": "lán",
+        "jyutping": "laan4"
+      },
+      "glyph": "🀣",
+      "pronunciationHint": "\"lán\" — one of the Four Flowers (四花).",
+      "color": "#aa44aa",
+      "note": "Bonus tile. Pairs with seat South (2). When drawn, set it aside, score it, and draw a replacement."
+    },
+    {
+      "id": "flower-3",
+      "category": "flower",
+      "rank": 3,
+      "copies": 1,
+      "isHonor": false,
+      "isBonus": true,
+      "isTerminal": false,
+      "names": {
+        "en": "Chrysanthemum (Flower)",
+        "zh": "菊",
+        "pinyin": "jú",
+        "jyutping": "guk1"
+      },
+      "glyph": "🀥",
+      "pronunciationHint": "\"jú\" — one of the Four Flowers (四花).",
+      "color": "#aa44aa",
+      "note": "Bonus tile. Pairs with seat West (3). When drawn, set it aside, score it, and draw a replacement."
+    },
+    {
+      "id": "flower-4",
+      "category": "flower",
+      "rank": 4,
+      "copies": 1,
+      "isHonor": false,
+      "isBonus": true,
+      "isTerminal": false,
+      "names": {
+        "en": "Bamboo (Flower)",
+        "zh": "竹",
+        "pinyin": "zhú",
+        "jyutping": "zuk1"
+      },
+      "glyph": "🀤",
+      "pronunciationHint": "\"zhú\" — one of the Four Flowers (四花).",
+      "color": "#aa44aa",
+      "note": "Bonus tile. Pairs with seat North (4). When drawn, set it aside, score it, and draw a replacement."
+    },
+    {
+      "id": "season-1",
+      "category": "season",
+      "rank": 1,
+      "copies": 1,
+      "isHonor": false,
+      "isBonus": true,
+      "isTerminal": false,
+      "names": {
+        "en": "Spring (Season)",
+        "zh": "春",
+        "pinyin": "chūn",
+        "jyutping": "ceon1"
+      },
+      "glyph": "🀦",
+      "pronunciationHint": "\"chūn\" — one of the Four Seasons (四季).",
+      "color": "#e69f00",
+      "note": "Bonus tile. Pairs with seat East (1). When drawn, set it aside, score it, and draw a replacement."
+    },
+    {
+      "id": "season-2",
+      "category": "season",
+      "rank": 2,
+      "copies": 1,
+      "isHonor": false,
+      "isBonus": true,
+      "isTerminal": false,
+      "names": {
+        "en": "Summer (Season)",
+        "zh": "夏",
+        "pinyin": "xià",
+        "jyutping": "haa6"
+      },
+      "glyph": "🀧",
+      "pronunciationHint": "\"xià\" — one of the Four Seasons (四季).",
+      "color": "#e69f00",
+      "note": "Bonus tile. Pairs with seat South (2). When drawn, set it aside, score it, and draw a replacement."
+    },
+    {
+      "id": "season-3",
+      "category": "season",
+      "rank": 3,
+      "copies": 1,
+      "isHonor": false,
+      "isBonus": true,
+      "isTerminal": false,
+      "names": {
+        "en": "Autumn (Season)",
+        "zh": "秋",
+        "pinyin": "qiū",
+        "jyutping": "cau1"
+      },
+      "glyph": "🀨",
+      "pronunciationHint": "\"qiū\" — one of the Four Seasons (四季).",
+      "color": "#e69f00",
+      "note": "Bonus tile. Pairs with seat West (3). When drawn, set it aside, score it, and draw a replacement."
+    },
+    {
+      "id": "season-4",
+      "category": "season",
+      "rank": 4,
+      "copies": 1,
+      "isHonor": false,
+      "isBonus": true,
+      "isTerminal": false,
+      "names": {
+        "en": "Winter (Season)",
+        "zh": "冬",
+        "pinyin": "dōng",
+        "jyutping": "dung1"
+      },
+      "glyph": "🀩",
+      "pronunciationHint": "\"dōng\" — one of the Four Seasons (四季).",
+      "color": "#e69f00",
+      "note": "Bonus tile. Pairs with seat North (4). When drawn, set it aside, score it, and draw a replacement."
+    }
+  ],
+  "wallCount": 144
+}
